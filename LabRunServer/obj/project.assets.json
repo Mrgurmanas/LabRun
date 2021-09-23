@@ -11894,23 +11894,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Vartotojas\\.nuget\\packages\\": {},
+    "C:\\Users\\šienuks\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Vartotojas\\Desktop\\New folder\\OPP\\LabRun\\LabRunServer\\LabRunServer.csproj",
+      "projectUniqueName": "C:\\Users\\šienuks\\Documents\\GitHub\\labrun\\LabRunServer\\LabRunServer.csproj",
       "projectName": "LabRunServer",
-      "projectPath": "C:\\Users\\Vartotojas\\Desktop\\New folder\\OPP\\LabRun\\LabRunServer\\LabRunServer.csproj",
-      "packagesPath": "C:\\Users\\Vartotojas\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Vartotojas\\Desktop\\New folder\\OPP\\LabRun\\LabRunServer\\obj\\",
+      "projectPath": "C:\\Users\\šienuks\\Documents\\GitHub\\labrun\\LabRunServer\\LabRunServer.csproj",
+      "packagesPath": "C:\\Users\\šienuks\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\šienuks\\Documents\\GitHub\\labrun\\LabRunServer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Vartotojas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\šienuks\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
