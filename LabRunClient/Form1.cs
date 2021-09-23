@@ -25,9 +25,15 @@ namespace LabRunClient
 
             //connection to SignalR server hub
             connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5000/gamehub")
+                .WithUrl("http://localhost:44398/gamehub")
                 .Build();
-
+            //getting answer from server
+                connection.On<string, string>("ReceiveMessage", (string userName, string message) =>
+                {
+                    //TODO: remove after testing
+                    Console.WriteLine(userName + " " + message);
+                    textBox1.Text = userName + " " + message;
+                });
             //trying connect to server 
             connection.Closed += async (error) =>
             {
@@ -38,13 +44,7 @@ namespace LabRunClient
                 //sending to server
                 await connection.InvokeCoreAsync("SendMessage", args: new[] { "User1", "Ready" });
                 
-                //getting answer from server
-                connection.On("ReceiveMessage", (string userName, string message) =>
-                {
-                    //TODO: remove after testing
-                    Console.WriteLine(userName + " " + message);
-                    textBox1.Text = userName + " " + message;
-                });
+                
             };
         }
     }

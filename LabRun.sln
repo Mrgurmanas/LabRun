@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.1321
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabRunServer", "LabRunServer\LabRunServer.csproj", "{EE416281-BFB6-4AF9-95AD-74FC52C3A93B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LabRunServer", "LabRunServer\LabRunServer.csproj", "{EE416281-BFB6-4AF9-95AD-74FC52C3A93B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabRunClient", "LabRunClient\LabRunClient.csproj", "{E8773FB9-103D-4179-96F5-9E50B16FB2F7}"
 EndProject
