@@ -131,10 +131,10 @@ C:\Users\Vartotojas\Desktop\GitHub\LabRun\LabRunClient\bin\Debug\System.Threadin
 C:\Users\Vartotojas\Desktop\GitHub\LabRun\LabRunClient\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\Vartotojas\Desktop\GitHub\LabRun\LabRunClient\bin\Debug\System.ValueTuple.xml
 C:\Users\Vartotojas\Desktop\GitHub\LabRun\LabRunClient\obj\Debug\LabRunClient.csprojAssemblyReference.cache
-C:\Users\Vartotojas\Desktop\GitHub\LabRun\LabRunClient\obj\Debug\LabRunClient.Form1.resources
 C:\Users\Vartotojas\Desktop\GitHub\LabRun\LabRunClient\obj\Debug\LabRunClient.Properties.Resources.resources
 C:\Users\Vartotojas\Desktop\GitHub\LabRun\LabRunClient\obj\Debug\LabRunClient.csproj.GenerateResource.cache
 C:\Users\Vartotojas\Desktop\GitHub\LabRun\LabRunClient\obj\Debug\LabRunClient.csproj.CoreCompileInputs.cache
 C:\Users\Vartotojas\Desktop\GitHub\LabRun\LabRunClient\obj\Debug\LabRunClient.csproj.CopyComplete
 C:\Users\Vartotojas\Desktop\GitHub\LabRun\LabRunClient\obj\Debug\LabRunClient.exe
 C:\Users\Vartotojas\Desktop\GitHub\LabRun\LabRunClient\obj\Debug\LabRunClient.pdb
+C:\Users\Vartotojas\Desktop\GitHub\LabRun\LabRunClient\obj\Debug\LabRunClient.Form1.resources
