@@ -17,22 +17,31 @@ namespace LabRunClient
 
         public Form1()
         {
+            //Setup of a form 
             InitializeComponent();
 
+            //TODO: remove after testing
             textBox1.Text = "asd";
 
+            //connection to SignalR server hub
             connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:44398/gamehub")//53353/44398/
+                .WithUrl("http://localhost:5000/gamehub")
                 .Build();
 
+            //trying connect to server 
             connection.Closed += async (error) =>
             {
                 await Task.Delay(new Random().Next(0, 5) * 1000);
                 await connection.StartAsync();
                 //connection.StartAsync().Wait();
+
+                //sending to server
                 await connection.InvokeCoreAsync("SendMessage", args: new[] { "User1", "Ready" });
+                
+                //getting answer from server
                 connection.On("ReceiveMessage", (string userName, string message) =>
                 {
+                    //TODO: remove after testing
                     Console.WriteLine(userName + " " + message);
                     textBox1.Text = userName + " " + message;
                 });

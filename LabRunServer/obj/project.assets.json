@@ -11900,11 +11900,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Vartotojas\\Desktop\\New folder\\OPP\\LabRun\\LabRunServer\\LabRunServer.csproj",
+      "projectUniqueName": "C:\\Users\\Vartotojas\\Desktop\\GitHub\\LabRun\\LabRunServer\\LabRunServer.csproj",
       "projectName": "LabRunServer",
-      "projectPath": "C:\\Users\\Vartotojas\\Desktop\\New folder\\OPP\\LabRun\\LabRunServer\\LabRunServer.csproj",
+      "projectPath": "C:\\Users\\Vartotojas\\Desktop\\GitHub\\LabRun\\LabRunServer\\LabRunServer.csproj",
       "packagesPath": "C:\\Users\\Vartotojas\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Vartotojas\\Desktop\\New folder\\OPP\\LabRun\\LabRunServer\\obj\\",
+      "outputPath": "C:\\Users\\Vartotojas\\Desktop\\GitHub\\LabRun\\LabRunServer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
