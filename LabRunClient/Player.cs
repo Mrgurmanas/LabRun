@@ -13,5 +13,6 @@ namespace LabRunClient
         public int Length { get; set; }
         public int Width { get; set; }
         public int Color { get; set; }
+        public int Score { get; set; }
     }
 }

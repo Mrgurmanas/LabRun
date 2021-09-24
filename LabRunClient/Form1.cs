@@ -17,7 +17,7 @@ namespace LabRunClient
 
         //game logic
         bool goUp, goDown, goLeft, goRight, isGameOver;
-        int score, playerSpeed;
+        int score, score2, playerSpeed;
 
         public Form1()
         {
@@ -26,20 +26,18 @@ namespace LabRunClient
 
             ResetGame();
 
-            //TODO: remove after testing
-            // textBox1.Text = "asd";
-
             //connection to SignalR server hub
             connection = new HubConnectionBuilder()
                 .WithUrl("http://localhost:44398/gamehub")
                 .Build();
-            //getting answer from server
+
+                //getting answer from server
                 connection.On<string, string>("ReceiveMessage", (string userName, string message) =>
                 {
                     //TODO: remove after testing
-                    Console.WriteLine(userName + " " + message);
-                   // textBox1.Text = userName + " " + message;
+                    txtCoins.Text = userName + " " + message;
                 });
+
             //trying connect to server 
             connection.Closed += async (error) =>
             {
@@ -49,8 +47,6 @@ namespace LabRunClient
 
                 //sending to server
                 await connection.InvokeCoreAsync("SendMessage", args: new[] { "User1", "Ready" });
-                
-                
             };
         }
 
@@ -106,6 +102,7 @@ namespace LabRunClient
         private void MainGameTimer(object sender, EventArgs e)
         {
             txtScorePlayer1.Text = "Score: " + score;
+            txtScorePlayer2.Text = "Score: " + score2;
 
             if (goLeft)
             {
@@ -158,6 +155,11 @@ namespace LabRunClient
                             score += 1;
                             x.Visible = false;
                         }
+                        if (player2.Bounds.IntersectsWith(x.Bounds))
+                        {
+                            score2 += 1;
+                            x.Visible = false;
+                        }
                     }
 
                     if ((string)x.Tag == "wall")
@@ -192,7 +194,10 @@ namespace LabRunClient
             txtScorePlayer1.Text = "Player 1 score: 0";
             txtScorePlayer2.Text = "Player 2 score: 0";
             txtCoins.Text = "20 coins left";
+
             score = 0;
+            score2 = 0;
+
             //pinkGhostSpeed = 5;
             isGameOver = false;
 
@@ -232,6 +237,7 @@ namespace LabRunClient
             gameTimer.Stop();
 
             txtScorePlayer1.Text = "Score: " + score + Environment.NewLine + message;
+            txtScorePlayer2.Text = "Score: " + score + Environment.NewLine + message;
 
         }
     }
