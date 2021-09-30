@@ -17,6 +17,7 @@ namespace ProjectClient
         private const string GROUP_NAME = "Game Hub";
         private const int GROUP_SIZE = 2;
         private String connectionId = "";
+        private GameMap map;
 
         public Form1()
         {
@@ -59,6 +60,13 @@ namespace ProjectClient
 
         private void ServerResponseHandling()
         {
+            connection.On("UpdatePlayers", (int X, int Y, string connectionId) =>
+            {
+                //btnLeave.Enabled = false;
+                map.UpdatePlayerByServer(X, Y, connectionId);
+                
+            });
+
             connection.On("ReceiveMessage", (string userName, string message) =>
             {
                 txtConnection.Text = "User: " + userName + " Message: " + message;
@@ -97,7 +105,7 @@ namespace ProjectClient
 
             connection.On("StartGroupGameSession", (string info, List<string> groupMemebers) =>
             {
-                GameMap map = new GameMap(groupMemebers, connectionId);
+                map = new GameMap(groupMemebers, GROUP_NAME, connectionId, connection);
                 map.ShowDialog();
             });
 

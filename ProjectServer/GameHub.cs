@@ -103,5 +103,13 @@ namespace ProjectServer
                 await Clients.Caller.SendAsync("RemoveFromGroup", $"{Context.ConnectionId} has left the group {groupName}.");
             }
         }
+
+        public async Task UpdatePlayerPos(string X, string Y, string connectionId, string groupName)
+        {
+            Console.WriteLine("UpdatePlayerPos X: " + X + " Y: " + Y + " connectionId: " + connectionId + " groupName: " + groupName);
+            int x = int.Parse(X);
+            int y = int.Parse(Y);
+            await Clients.Group(groupName).SendAsync("UpdatePlayers", x, y, connectionId);
+        }
     }
 }

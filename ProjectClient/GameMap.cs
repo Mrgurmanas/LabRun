@@ -1,4 +1,5 @@
-﻿using ProjectClient.Class;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using ProjectClient.Class;
 using ProjectClient.Class.AbstractFactory;
 using ProjectClient.Class.Factory;
 using System;
@@ -13,6 +14,17 @@ namespace ProjectClient
 {
     public partial class GameMap : Form
     {
+        HubConnection connection;
+        private string connectionId;
+        private string groupName;
+
+        //private bool goUp, goDown, goLeft, goRight, isGameOver;
+        private Graphics g;
+        private const int BLOCK_SIZE = 45;
+        GraphicalElement player1;
+        GraphicalElement player2;
+
+
         private const int GROUP_SIZE = 2;
         private const int PLAYER_1_ID = 1;
         private const int PLAYER_2_ID = 2;
@@ -32,7 +44,10 @@ namespace ProjectClient
         private const int PLAYER_ID = 2;
         private const int COIN_ID = 3;
 
-        private int[,] MapMatrix = new int[,] {
+        public static int  MAP_MAX_SIZE = 20;
+        public static int MAP_MIN_SIZE = 0;
+        private int[,] MapMatrix = new int[21, 21];
+        private int[,] DefaultMap = new int[,] {
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
             { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
             { 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1 },
@@ -54,14 +69,21 @@ namespace ProjectClient
             { 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1 },
             { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }};
-
-        public GameMap(List<string> groupPlayers, string connectionId)
+        
+        public GameMap(List<string> groupPlayers, string groupName, string connectionId, HubConnection connection)
         {
             InitializeComponent();
+            this.connection = connection;
+            this.connectionId = connectionId;
+            this.groupName = groupName;
+
+            g = canvas.CreateGraphics();
+            MapMatrix = DefaultMap;
+            Draw();
 
             if (groupPlayers.Count == GROUP_SIZE)
             {
-                switch (groupPlayers.IndexOf(connectionId)){
+                switch (groupPlayers.IndexOf(connectionId)) {
                     case 0:
                         txtPlayerId.Text = "Player: " + groupPlayers[0];
                         txtPlayer2Id.Text = "Player: " + groupPlayers[1];
@@ -81,10 +103,17 @@ namespace ProjectClient
             //Singleton Inner class approach
             GameRound gameRound = GameRound.getInstance();
 
+            
+
             //Factory
             Creator creator = new GraphicalElementCreator();
-            GraphicalElement player1 = creator.FactoryMethod(PLAYER);
-            GraphicalElement player2 = creator.FactoryMethod(PLAYER);
+            player1 = creator.FactoryMethod(PLAYER);
+            player2 = creator.FactoryMethod(PLAYER);
+
+            player1.X = 1;
+            player1.Y = 10;
+            player2.X = 19;
+            player2.Y = 10;
 
             GraphicalElement coin = creator.FactoryMethod(COIN);
 
@@ -106,7 +135,7 @@ namespace ProjectClient
             AbstractFactory itemFactory = null;
 
             Random rnd = new Random();
-            switch(rnd.Next(1, 2)){
+            switch (rnd.Next(1, 2)) {
                 case 1:
                     itemFactory = new DefaultFactory();
                     break;
@@ -134,21 +163,132 @@ namespace ProjectClient
             //spawn item
         }
 
-        private void Update()
+        private void GameTimer(object sender, EventArgs e)
         {
+            //Update();
+            //UpdateMap();
+            //Draw();
+        }
 
+        public void UpdatePlayerByServer(int X, int Y, string connectionId)
+        {
+            if (this.connectionId != connectionId)
+            {
+                player2.X = X;
+                player2.Y = Y;
+                UpdateMap();
+                Draw();
+            }
+        }
+
+        private void UpdatePlayerPosition(int pos)
+        {
+            switch (pos)
+            {
+                case -1:
+                if (player1.X - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X - 1, player1.Y] != WALL_ID && MapMatrix[player1.X - 1, player1.Y] != PLAYER_ID))
+                {
+                    SetMap(player1.X, player1.Y, SPACE_ID);
+                    player1.X = player1.X - 1;
+                }
+                    break;
+                case 0:
+                if (player1.Y - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X, player1.Y - 1] != WALL_ID && MapMatrix[player1.X, player1.Y - 1] != PLAYER_ID))
+                    SetMap(player1.X, player1.Y, SPACE_ID);
+                {
+                    player1.Y = player1.Y - 1;
+                }
+                    break;
+                case 1:
+                if (player1.X + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X + 1, player1.Y] != WALL_ID && MapMatrix[player1.X + 1, player1.Y] != PLAYER_ID))
+                {
+                    SetMap(player1.X, player1.Y, SPACE_ID);
+                    player1.X = player1.X + 1;
+                }
+                    break;
+                case 2:
+                if (player1.Y + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X, player1.Y + 1] != WALL_ID && MapMatrix[player1.X, player1.Y + 1] != PLAYER_ID))
+                {
+                    SetMap(player1.X, player1.Y, SPACE_ID);
+                    player1.Y = player1.Y + 1;
+                }
+                    break;
+            }
+            connection.InvokeCoreAsync("UpdatePlayerPos", args: new[] {player1.X.ToString(), player1.Y.ToString(), connectionId, groupName});
+
+            UpdateMap();
+            Draw();
+        }
+
+        private void SetMap(int X, int Y, int id)
+        {
+            MapMatrix[Y, X] = id;
+        }
+
+        private void UpdateMap()
+        {
+            //update map from GraphicElements objects
+            MapMatrix[player1.Y, player1.X] = PLAYER_ID;
+            MapMatrix[player2.Y, player2.X] = PLAYER_ID;
         }
 
         private void Draw()
         {
+            canvas.Refresh();
 
+            Rectangle rectangle;
+            for (int i = 0; i < 21; i++)
+            {
+                for (int j = 0; j < 21; j++)
+                {
+                    int blockId = MapMatrix[j, i];
+                    rectangle = new Rectangle(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+
+                    switch (blockId)
+                    {
+                        case SPACE_ID:
+                            //g.FillRectangle(Brushes.GreenYellow, rectangle);
+                            break;
+                        case PLAYER_ID:
+                            g.FillRectangle(Brushes.GreenYellow, rectangle);
+                            break;
+                        case WALL_ID:
+                            g.FillRectangle(Brushes.Blue, rectangle);
+                            break;
+                        case COIN_ID:
+                            g.FillRectangle(Brushes.Yellow, rectangle);
+                            break;
+                    }
+                }
+            }
         }
 
+        private void KeyIsPressed(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar.Equals('w'))
+            {
+                UpdatePlayerPosition(0);
+            }
+            if (e.KeyChar.Equals('s'))
+            {
+                UpdatePlayerPosition(2);
+            }
+            if (e.KeyChar.Equals('a'))
+            {
+                UpdatePlayerPosition(-1);
+            }
+            if (e.KeyChar.Equals('d'))
+            {
+                UpdatePlayerPosition(1);
+            }
+        }
 
+        private void canvas_Paint(object sender, PaintEventArgs e)
+        {
+        }
 
         private void GameMap_Load(object sender, EventArgs e)
         {
-
         }
     }
 }
