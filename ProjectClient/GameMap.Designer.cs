@@ -30,7 +30,7 @@ namespace ProjectClient
         private void InitializeComponent()
         {
             this.txtPlayerId = new System.Windows.Forms.Label();
-            this.txtPlayer2ID = new System.Windows.Forms.Label();
+            this.txtPlayer2Id = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtPlayerId
@@ -42,21 +42,21 @@ namespace ProjectClient
             this.txtPlayerId.TabIndex = 0;
             this.txtPlayerId.Text = "Player";
             // 
-            // txtPlayer2ID
+            // txtPlayer2Id
             // 
-            this.txtPlayer2ID.AutoSize = true;
-            this.txtPlayer2ID.Location = new System.Drawing.Point(662, 9);
-            this.txtPlayer2ID.Name = "txtPlayer2ID";
-            this.txtPlayer2ID.Size = new System.Drawing.Size(57, 20);
-            this.txtPlayer2ID.TabIndex = 1;
-            this.txtPlayer2ID.Text = "Player2";
+            this.txtPlayer2Id.AutoSize = true;
+            this.txtPlayer2Id.Location = new System.Drawing.Point(662, 9);
+            this.txtPlayer2Id.Name = "txtPlayer2Id";
+            this.txtPlayer2Id.Size = new System.Drawing.Size(57, 20);
+            this.txtPlayer2Id.TabIndex = 1;
+            this.txtPlayer2Id.Text = "Player2";
             // 
             // GameMap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.txtPlayer2ID);
+            this.Controls.Add(this.txtPlayer2Id);
             this.Controls.Add(this.txtPlayerId);
             this.Name = "GameMap";
             this.Text = "Map";
@@ -69,6 +69,6 @@ namespace ProjectClient
         #endregion
 
         private System.Windows.Forms.Label txtPlayerId;
-        private System.Windows.Forms.Label txtPlayer2ID;
+        private System.Windows.Forms.Label txtPlayer2Id;
     }
 }

@@ -16,7 +16,6 @@ namespace ProjectClient
         HubConnection connection;
         private const string GROUP_NAME = "Game Hub";
         private const int GROUP_SIZE = 2;
-        private List<string> groupList = new List<string>();
         private String connectionId = "";
 
         public Form1()
@@ -72,49 +71,33 @@ namespace ProjectClient
 
             });
 
+            connection.On("JoinedGroupUpdateId", (string ConnectionId) =>
+            {
+                connectionId = ConnectionId;
+            });
+
             connection.On("JoinedGroup", (string info, string ConnectionId) =>
             {
                 txtConnectionError.Visible = false;
                 txtConnection.Text = info;
-
-                if (groupList.Count <= GROUP_SIZE)
-                {
-                    if (!groupList.Contains(ConnectionId))
-                    {
-                        groupList.Add(ConnectionId);
-                        if(groupList.Count == 2)
-                        {
-                            connection.InvokeCoreAsync("StartGroupGameSession", args: new[] { GROUP_NAME });
-                        }
-                    }
-                }
+                btnJoin.Enabled = false;
+                btnLeave.Enabled = true;
             });
             
-                connection.On("RemoveFromGroup", (string info, string ConnectionId) =>
+                connection.On("RemoveFromGroup", (string info) =>
                 {
                     txtConnectionError.Visible = false;
                     txtConnection.Text = info;
+                    btnJoin.Enabled = true;
+                    btnLeave.Enabled = false;
+                   
 
-                    if (groupList.Count > 0)
-                    {
-                        if (groupList.Contains(ConnectionId))
-                        {
-                            groupList.Remove(ConnectionId);
-                        }
-                    }
+                    connectionId = "";
                 });
 
-            connection.On("MemberConnection", (string ConnectionId) =>
+            connection.On("StartGroupGameSession", (string info, List<string> groupMemebers) =>
             {
-                this.connectionId = ConnectionId;
-            });
-
-            connection.On("StartGroupGameSession", (string info) =>
-            {
-                //opening game for all group members
-               // int index = groupList.IndexOf(connectionId);
-               // int playerIndex = index + 1;
-                GameMap map = new GameMap(groupList);
+                GameMap map = new GameMap(groupMemebers, connectionId);
                 map.ShowDialog();
             });
 
@@ -133,7 +116,7 @@ namespace ProjectClient
 
         private async void btnJoin_Click(object sender, EventArgs e)
         {
-            await connection.InvokeCoreAsync("AddToGroup", args: new[] { GROUP_NAME });
+            await connection.InvokeCoreAsync("JoinGroup", args: new[] { GROUP_NAME });
         }
 
         private async void btnLeave_Click(object sender, EventArgs e)

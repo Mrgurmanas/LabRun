@@ -7,10 +7,52 @@ using System.Threading.Tasks;
 
 namespace ProjectServer
 {
+    public static class GroupHandler
+    {
+        private const int GROUP_SIZE = 2;
+        private static List<string> groupList = new List<string>();
+
+        public static bool CanStartGame()
+        {
+            return groupList.Count == GROUP_SIZE;
+        }
+
+        public static bool CanJoinGroup()
+        {
+            return groupList.Count < GROUP_SIZE;
+        }
+
+        public static List<string> GetGroupList()
+        {
+            return groupList;
+        }
+
+        public static bool Add(string connectionId)
+        {
+            if (groupList.Count < GROUP_SIZE)
+            {
+                if (!groupList.Contains(connectionId))
+                {
+                    groupList.Add(connectionId);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool Remove(string connectionId)
+        {
+            if (groupList.Contains(connectionId))
+            {
+                groupList.Remove(connectionId);
+                return true;
+            }
+            return false;
+        }
+    }
+
     public class GameHub : Hub
     {
-        //private const int GROUP_SIZE = 2;
-        //private List<string> groupList = new List<string>();
 
         public Task SendMessage(string user, string message)
         {
@@ -22,24 +64,44 @@ namespace ProjectServer
             return Clients.Caller.SendAsync("ConnectionTest", test);
         }
 
-        public async Task AddToGroup(string groupName)
+        public async Task JoinGroup(string groupName)
         {
-                    await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
 
+            if (GroupHandler.CanJoinGroup())
+            {
+                if (GroupHandler.Add(Context.ConnectionId)) { 
                     await Clients.Group(groupName).SendAsync("JoinedGroup", $"{Context.ConnectionId} has joined the group {groupName}.", Context.ConnectionId);
-                    await Clients.Caller.SendAsync("MemberConnection", Context.ConnectionId);
-        }
-
-        public async Task StartGroupGameSession(string groupName)
-        {
-            await Clients.Group(groupName).SendAsync("StartGroupGameSession", "");
+                    await Clients.Caller.SendAsync("JoinedGroupUpdateId", Context.ConnectionId);
+                }
+                else
+                {
+                    await Clients.Caller.SendAsync("GroupError", $"Already joined {groupName} group");
+                }
+                if (GroupHandler.CanStartGame())
+                {
+                    await Clients.Group(groupName).SendAsync("StartGroupGameSession", "", GroupHandler.GetGroupList());
+                
+                }
+            }
+            else
+            {
+                // send error
+                await Clients.Caller.SendAsync("GroupError", $"Can't join {groupName} group");
+            }
         }
 
         public async Task RemoveFromGroup(string groupName)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
-
-            await Clients.Group(groupName).SendAsync("RemoveFromGroup", $"{Context.ConnectionId} has left the group {groupName}.", Context.ConnectionId);
+            if (!GroupHandler.Remove(Context.ConnectionId))
+            {
+                await Clients.Caller.SendAsync("GroupError", $"Can't remove from {groupName} group");
+            }
+            else
+            {
+                await Clients.Caller.SendAsync("RemoveFromGroup", $"{Context.ConnectionId} has left the group {groupName}.");
+            }
         }
     }
 }
