@@ -61,6 +61,7 @@ namespace ProjectServer
 
         public Task ConnectionTest(string test)
         {
+            Console.WriteLine("Connection test: " +Context.ConnectionId + " " + test);
             return Clients.Caller.SendAsync("ConnectionTest", test);
         }
 
@@ -80,8 +81,10 @@ namespace ProjectServer
                 }
                 if (GroupHandler.CanStartGame())
                 {
+                    //start game
                     await Clients.Group(groupName).SendAsync("StartGroupGameSession", "", GroupHandler.GetGroupList());
-                
+                    Console.WriteLine("Started game for Player1 " + GroupHandler.GetGroupList()[0] + " Player2 " + GroupHandler.GetGroupList()[0]);
+                    
                 }
             }
             else
@@ -109,7 +112,8 @@ namespace ProjectServer
             Console.WriteLine("UpdatePlayerPos X: " + X + " Y: " + Y + " connectionId: " + connectionId + " groupName: " + groupName);
             int x = int.Parse(X);
             int y = int.Parse(Y);
-            await Clients.Group(groupName).SendAsync("UpdatePlayers", x, y, connectionId);
+            //await Clients.Group(groupName).SendAsync("UpdatePlayers", x, y, connectionId, groupName);
+            await Clients.All.SendAsync("UpdatePlayers", x, y, connectionId, groupName);
         }
     }
 }

@@ -6,6 +6,6 @@ namespace ProjectClient.Class.Factory
 {
     abstract class Creator
     {
-        public abstract GraphicalElement FactoryMethod(string element);
+        public abstract GraphicalElement FactoryMethod(int elementId);
     }
 }

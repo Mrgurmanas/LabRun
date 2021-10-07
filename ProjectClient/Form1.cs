@@ -60,9 +60,9 @@ namespace ProjectClient
 
         private void ServerResponseHandling()
         {
-            connection.On("UpdatePlayers", (int X, int Y, string connectionId) =>
+            connection.On("UpdatePlayers", (int X, int Y, string connectionId, string groupName) =>
             {
-                //btnLeave.Enabled = false;
+                connection.InvokeCoreAsync("ConnectionTest", args: new[] { "conenction UpdatePlayers" });
                 map.UpdatePlayerByServer(X, Y, connectionId);
                 
             });
@@ -76,7 +76,6 @@ namespace ProjectClient
             {
                 txtConnection.Text = "Connected succesfuly";
                 btnJoin.Enabled = true;
-
             });
 
             connection.On("JoinedGroupUpdateId", (string ConnectionId) =>
@@ -119,7 +118,7 @@ namespace ProjectClient
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         private async void btnJoin_Click(object sender, EventArgs e)

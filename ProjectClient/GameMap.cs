@@ -24,15 +24,14 @@ namespace ProjectClient
         GraphicalElement player1;
         GraphicalElement player2;
 
+        private const int LEFT = -1;
+        private const int UP = 0;
+        private const int RIGHT = 1;
+        private const int DOWN = 2;
 
         private const int GROUP_SIZE = 2;
         private const int PLAYER_1_ID = 1;
         private const int PLAYER_2_ID = 2;
-
-        private const string PLAYER = "P";
-        private const string COIN = "C";
-        private const string ITEM = "I";
-        private const string WALL = "W";
 
         private int MapLength = 1000;
         private int MapWidth = 1000;
@@ -43,8 +42,9 @@ namespace ProjectClient
         private const int WALL_ID = 1;
         private const int PLAYER_ID = 2;
         private const int COIN_ID = 3;
+        private const int ITEM_ID = 4;
 
-        public static int  MAP_MAX_SIZE = 20;
+        public static int MAP_MAX_SIZE = 20;
         public static int MAP_MIN_SIZE = 0;
         private int[,] MapMatrix = new int[21, 21];
         private int[,] DefaultMap = new int[,] {
@@ -69,7 +69,7 @@ namespace ProjectClient
             { 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1 },
             { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }};
-        
+
         public GameMap(List<string> groupPlayers, string groupName, string connectionId, HubConnection connection)
         {
             InitializeComponent();
@@ -77,13 +77,28 @@ namespace ProjectClient
             this.connectionId = connectionId;
             this.groupName = groupName;
 
+            /*this.connection = new HubConnectionBuilder()
+                .WithUrl("http://localhost:5000/gamehub")
+                .Build();
+
+            connection.On("UpdatePlayers", (int X, int Y, string connectionId, string groupName) =>
+            {
+                connection.InvokeCoreAsync("ConnectionTest", args: new[] { "conenction UpdatePlayers" });
+                UpdatePlayerByServer(X, Y, connectionId);
+            });
+
+            connection.StartAsync();
+            connection.InvokeCoreAsync("ConnectionTest", args: new[] { "testing connection" });
+            */
+
             g = canvas.CreateGraphics();
             MapMatrix = DefaultMap;
             Draw();
 
             if (groupPlayers.Count == GROUP_SIZE)
             {
-                switch (groupPlayers.IndexOf(connectionId)) {
+                switch (groupPlayers.IndexOf(connectionId))
+                {
                     case 0:
                         txtPlayerId.Text = "Player: " + groupPlayers[0];
                         txtPlayer2Id.Text = "Player: " + groupPlayers[1];
@@ -103,39 +118,43 @@ namespace ProjectClient
             //Singleton Inner class approach
             GameRound gameRound = GameRound.getInstance();
 
-            
+            Item coin = new Coin();
 
             //Factory
             Creator creator = new GraphicalElementCreator();
-            player1 = creator.FactoryMethod(PLAYER);
-            player2 = creator.FactoryMethod(PLAYER);
 
-            player1.X = 1;
-            player1.Y = 10;
-            player2.X = 19;
-            player2.Y = 10;
+            player1 = creator.FactoryMethod(PLAYER_ID);
+            player2 = creator.FactoryMethod(PLAYER_ID);
 
-            GraphicalElement coin = creator.FactoryMethod(COIN);
+            //initial players positions
+            switch (groupPlayers.IndexOf(connectionId))
+            {
+                case 0:
+                    player1.X = 1;
+                    player1.Y = 10;
+                    player2.X = 19;
+                    player2.Y = 10;
+                    break;
+                case 1:
+                    player1.X = 19;
+                    player1.Y = 10;
+                    player2.X = 19;
+                    player2.Y = 10;
+                    break;
+            }
 
-            //GraphicalElement item1 = creator.FactoryMethod(ITEM);
-            //GraphicalElement item2 = creator.FactoryMethod(ITEM);
+            GraphicalElement wall1 = creator.FactoryMethod(WALL_ID);
+            GraphicalElement wall2 = creator.FactoryMethod(WALL_ID);
+            GraphicalElement wall3 = creator.FactoryMethod(WALL_ID);
+            GraphicalElement wall4 = creator.FactoryMethod(WALL_ID);
 
-            GraphicalElement wall1 = creator.FactoryMethod(WALL);
-            GraphicalElement wall2 = creator.FactoryMethod(WALL);
-            GraphicalElement wall3 = creator.FactoryMethod(WALL);
-            GraphicalElement wall4 = creator.FactoryMethod(WALL);
-
-            //abstract factory
-            //AbstractFactory defaultItemFactory = new DefaultFactory();
-            //AbstractFactory upgradedItemFactory = new UpgradedFactory();
-            //var specialItem = defaultItemFactory.createSpecialWall();
-            //var specialItem2 = upgradedItemFactory.createSpikes();
-
+            //Abstract Factory
             //randomizing special item level
             AbstractFactory itemFactory = null;
 
             Random rnd = new Random();
-            switch (rnd.Next(1, 2)) {
+            switch (rnd.Next(1, 2))
+            {
                 case 1:
                     itemFactory = new DefaultFactory();
                     break;
@@ -145,7 +164,6 @@ namespace ProjectClient
             }
 
             //randomizing special item
-
             rnd = new Random();
             switch (rnd.Next(1, 2))
             {
@@ -180,41 +198,41 @@ namespace ProjectClient
                 Draw();
             }
         }
-
+        
         private void UpdatePlayerPosition(int pos)
         {
             switch (pos)
             {
-                case -1:
-                if (player1.X - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X - 1, player1.Y] != WALL_ID && MapMatrix[player1.X - 1, player1.Y] != PLAYER_ID))
-                {
+                case LEFT:
+                    //if (player1.X - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X - 1, player1.Y] != WALL_ID && MapMatrix[player1.X - 1, player1.Y] != PLAYER_ID))
+                    // {
                     SetMap(player1.X, player1.Y, SPACE_ID);
                     player1.X = player1.X - 1;
-                }
+                    // }
                     break;
-                case 0:
-                if (player1.Y - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X, player1.Y - 1] != WALL_ID && MapMatrix[player1.X, player1.Y - 1] != PLAYER_ID))
+                case UP:
+                    //if (player1.Y - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X, player1.Y - 1] != WALL_ID && MapMatrix[player1.X, player1.Y - 1] != PLAYER_ID)) 
+                    //{
                     SetMap(player1.X, player1.Y, SPACE_ID);
-                {
                     player1.Y = player1.Y - 1;
-                }
+                    // }
                     break;
-                case 1:
-                if (player1.X + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X + 1, player1.Y] != WALL_ID && MapMatrix[player1.X + 1, player1.Y] != PLAYER_ID))
-                {
+                case RIGHT:
+                    // if (player1.X + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X + 1, player1.Y] != WALL_ID && MapMatrix[player1.X + 1, player1.Y] != PLAYER_ID))
+                    // {
                     SetMap(player1.X, player1.Y, SPACE_ID);
                     player1.X = player1.X + 1;
-                }
+                    //  }
                     break;
-                case 2:
-                if (player1.Y + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X, player1.Y + 1] != WALL_ID && MapMatrix[player1.X, player1.Y + 1] != PLAYER_ID))
-                {
+                case DOWN:
+                    //  if (player1.Y + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X, player1.Y + 1] != WALL_ID && MapMatrix[player1.X, player1.Y + 1] != PLAYER_ID))
+                    //  {
                     SetMap(player1.X, player1.Y, SPACE_ID);
                     player1.Y = player1.Y + 1;
-                }
+                    //  }
                     break;
             }
-            connection.InvokeCoreAsync("UpdatePlayerPos", args: new[] {player1.X.ToString(), player1.Y.ToString(), connectionId, groupName});
+            connection.InvokeCoreAsync("UpdatePlayerPos", args: new[] { player1.X.ToString(), player1.Y.ToString(), connectionId, groupName });
 
             UpdateMap();
             Draw();
@@ -267,19 +285,19 @@ namespace ProjectClient
         {
             if (e.KeyChar.Equals('w'))
             {
-                UpdatePlayerPosition(0);
+                UpdatePlayerPosition(UP);
             }
             if (e.KeyChar.Equals('s'))
             {
-                UpdatePlayerPosition(2);
+                UpdatePlayerPosition(DOWN);
             }
             if (e.KeyChar.Equals('a'))
             {
-                UpdatePlayerPosition(-1);
+                UpdatePlayerPosition(LEFT);
             }
             if (e.KeyChar.Equals('d'))
             {
-                UpdatePlayerPosition(1);
+                UpdatePlayerPosition(RIGHT);
             }
         }
 

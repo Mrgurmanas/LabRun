@@ -4,9 +4,8 @@ using System.Text;
 
 namespace ProjectClient.Class.Factory
 {
-    class Coin : GraphicalElement
+    class Coin : Item
     {
         public int Value { get; set; }
-        public bool Visible { get; set; }
     }
 }
