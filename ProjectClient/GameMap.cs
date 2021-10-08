@@ -2,6 +2,7 @@
 using ProjectClient.Class;
 using ProjectClient.Class.AbstractFactory;
 using ProjectClient.Class.Factory;
+using ProjectClient.Class.Observer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -43,6 +44,10 @@ namespace ProjectClient
         private const int PLAYER_ID = 2;
         private const int COIN_ID = 3;
         private const int ITEM_ID = 4;
+
+        /*private const int SPECIAL_WALL_ID = 1;
+        private const int SPIKES_ID = 2;
+        private const int DESTROYER_ID = 4;*/
 
         public static int MAP_MAX_SIZE = 20;
         public static int MAP_MIN_SIZE = 0;
@@ -147,6 +152,15 @@ namespace ProjectClient
             GraphicalElement wall2 = creator.FactoryMethod(WALL_ID);
             GraphicalElement wall3 = creator.FactoryMethod(WALL_ID);
             GraphicalElement wall4 = creator.FactoryMethod(WALL_ID);
+
+            //Observer
+            //List<Item> items = new List<Item>();
+            Subject subject = new ConcreteSubject();
+
+            Item testCoin = new Coin();
+            subject.Attach(testCoin);
+            
+            testCoin.UseItem(); 
 
             //Abstract Factory
             //randomizing special item level
