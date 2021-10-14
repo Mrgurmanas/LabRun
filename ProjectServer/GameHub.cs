@@ -71,7 +71,7 @@ namespace ProjectServer
 
             if (GroupHandler.CanJoinGroup())
             {
-                if (GroupHandler.Add(Context.ConnectionId)) { 
+                if (GroupHandler.Add(Context.ConnectionId)) {
                     await Clients.Group(groupName).SendAsync("JoinedGroup", $"{Context.ConnectionId} has joined the group {groupName}.", Context.ConnectionId);
                     await Clients.Caller.SendAsync("JoinedGroupUpdateId", Context.ConnectionId);
                 }

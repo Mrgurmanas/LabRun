@@ -3,6 +3,7 @@ using ProjectClient.Class;
 using ProjectClient.Class.AbstractFactory;
 using ProjectClient.Class.Factory;
 using ProjectClient.Class.Observer;
+using ProjectClient.Class.Strategy;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -187,6 +188,17 @@ namespace ProjectClient
                     SpawnItemToMap(itemFactory.createSpikes());
                     break;
             }
+
+            //Strategy
+            Item itemCoin = new Item();
+
+            //player
+            itemCoin.SetAlgorithm(new PlayerAlgorithm());
+            itemCoin.ItemActivated();
+
+            //enemy 
+            itemCoin.SetAlgorithm(new EnemyAlgorithm());
+            itemCoin.ItemActivated();
         }
 
         private void SpawnItemToMap<T>(T item)

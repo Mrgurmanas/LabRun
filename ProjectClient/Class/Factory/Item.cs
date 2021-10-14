@@ -1,4 +1,5 @@
 ﻿using ProjectClient.Class.Observer;
+using ProjectClient.Class.Strategy;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,6 +17,23 @@ namespace ProjectClient.Class.Factory
         public bool Visibility { get; set; }
 
         public Subject subject;
+
+        public Algorithm itemActivatedAlgorithm;
+
+        public void SetAlgorithm(Algorithm algorithm)
+        {
+            itemActivatedAlgorithm = algorithm;
+        }
+
+        public Algorithm GetAlgorithm()
+        {
+            return itemActivatedAlgorithm;
+        }
+
+        public void ItemActivated()
+        {
+            itemActivatedAlgorithm.ItemActivated();
+        }
 
         public void UseItem()
         {
