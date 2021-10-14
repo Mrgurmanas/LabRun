@@ -61,9 +61,9 @@ namespace ProjectClient
             { 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1 },
             { 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1 },
             { 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1 },
-            { 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1 },
+            { 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 3, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1 },
             { 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1 },
-            { 1, 2, 0, 0, 0, 0, 0, 0, 1, 20, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 1 },
+            { 1, 2, 0, 0, 0, 0, 0, 0, 1, 10, 20, 40, 1, 0, 0, 0, 0, 0, 0, 2, 1 },
             { 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1 },
             { 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1 },
             { 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1 },
@@ -315,13 +315,14 @@ namespace ProjectClient
                             g.FillRectangle(Brushes.Blue, rectangle);
                             break;
                         case COIN_ID:
-                            g.FillRectangle(Brushes.Yellow, rectangle);
+                            g.FillEllipse(Brushes.Yellow, rectangle);
                             break;
                         case SPECIAL_WALL_ID:
                             g.FillRectangle(Brushes.AliceBlue, rectangle);
                             break;
                         case DESTROYER_ID:
-                            g.FillRectangle(Brushes.Black, rectangle);
+                            //g.DrawRectangle(new Pen(Brushes.DarkMagenta, 3), rectangle);
+                            g.FillRectangle(Brushes.DarkMagenta, rectangle);
                             break;
                         case SPIKES_ID:
                             g.FillPolygon(Brushes.White, triangle);
