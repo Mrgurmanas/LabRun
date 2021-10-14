@@ -45,9 +45,9 @@ namespace ProjectClient
         private const int COIN_ID = 3;
         private const int ITEM_ID = 4;
 
-        /*private const int SPECIAL_WALL_ID = 1;
-        private const int SPIKES_ID = 2;
-        private const int DESTROYER_ID = 4;*/
+        private const int SPECIAL_WALL_ID = 10;
+        private const int SPIKES_ID = 20;
+        private const int DESTROYER_ID = 40;
 
         public static int MAP_MAX_SIZE = 20;
         public static int MAP_MIN_SIZE = 0;
@@ -63,7 +63,7 @@ namespace ProjectClient
             { 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1 },
             { 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1 },
             { 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1 },
-            { 1, 2, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 1 },
+            { 1, 2, 0, 0, 0, 0, 0, 0, 1, 20, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 1 },
             { 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1 },
             { 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1 },
             { 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1 },
@@ -282,13 +282,26 @@ namespace ProjectClient
         {
             canvas.Refresh();
 
-            Rectangle rectangle;
+            Rectangle rectangle = new Rectangle();
+            PointF[] triangle = new PointF[3];
+
             for (int i = 0; i < 21; i++)
             {
                 for (int j = 0; j < 21; j++)
                 {
                     int blockId = MapMatrix[j, i];
-                    rectangle = new Rectangle(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    if (blockId != SPIKES_ID) {
+                        rectangle = new Rectangle(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    }
+                    else
+                    {
+                        PointF point1 = new PointF(i * BLOCK_SIZE, (j+1) * BLOCK_SIZE);
+                        PointF point2 = new PointF((i * BLOCK_SIZE)+(BLOCK_SIZE/2), (j * BLOCK_SIZE));
+                        PointF point3 = new PointF((i * BLOCK_SIZE) + BLOCK_SIZE, (j + 1) * BLOCK_SIZE);
+                        triangle[0] = point1;
+                        triangle[1] = point2;
+                        triangle[2] = point3;
+                    }
 
                     switch (blockId)
                     {
@@ -303,6 +316,15 @@ namespace ProjectClient
                             break;
                         case COIN_ID:
                             g.FillRectangle(Brushes.Yellow, rectangle);
+                            break;
+                        case SPECIAL_WALL_ID:
+                            g.FillRectangle(Brushes.AliceBlue, rectangle);
+                            break;
+                        case DESTROYER_ID:
+                            g.FillRectangle(Brushes.Black, rectangle);
+                            break;
+                        case SPIKES_ID:
+                            g.FillPolygon(Brushes.White, triangle);
                             break;
                     }
                 }

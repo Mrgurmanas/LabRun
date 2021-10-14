@@ -8,7 +8,7 @@ namespace ProjectClient.Class.Strategy
     {
         public override void ItemActivated()
         {
-            throw new NotImplementedException();
+            //do something
         }
     }
 }
