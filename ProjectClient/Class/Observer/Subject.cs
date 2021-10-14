@@ -11,7 +11,7 @@ namespace ProjectClient.Class.Observer
         public void Attach(IObserver item)
         {
             observers.Add(item);
-            item.SetConcreteSubject(this);
+            item.SetServer(this);
         }
 
         public void Deattach(IObserver item)

@@ -155,11 +155,11 @@ namespace ProjectClient
 
             //Observer
             //List<Item> items = new List<Item>();
-            Subject subject = new ConcreteSubject();
+            Subject subject = new Server();
 
             Item testCoin = new Coin();
             subject.Attach(testCoin);
-            
+
             testCoin.UseItem(); 
 
             //Abstract Factory

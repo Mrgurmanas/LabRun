@@ -7,7 +7,7 @@ namespace ProjectClient.Class.Observer
     interface IObserver
     {
         public void Update();
-        public void NotifyConcreteSubject();
-        public void SetConcreteSubject(Subject subject);
+        public void NotifyServer();
+        public void SetServer(Subject subject);
     }
 }

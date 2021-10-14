@@ -40,23 +40,23 @@ namespace ProjectClient.Class.Factory
             
             if(this is Destroyer)
             {
-                NotifyConcreteSubject();
+                NotifyServer();
             }
         }
 
-        public void NotifyConcreteSubject()
+        public void NotifyServer()
         {
             subject.NotifyAll();
         }
 
-        public void SetConcreteSubject(Subject subject)
+        public void SetServer(Subject subject)
         {
             this.subject = subject;
         }
 
         public void Update()
         {
-            //TODO: what to do when observer send message
+            //TODO: what to do when observer send message 
         }
     }
 }
