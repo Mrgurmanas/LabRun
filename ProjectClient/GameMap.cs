@@ -19,7 +19,6 @@ namespace ProjectClient
         private string connectionId;
         private string groupName;
 
-        //private bool goUp, goDown, goLeft, goRight, isGameOver;
         private Graphics g;
         private const int BLOCK_SIZE = 45;
         GraphicalElement player1;
@@ -195,6 +194,7 @@ namespace ProjectClient
             //spawn item
         }
 
+        //dont need ?
         private void GameTimer(object sender, EventArgs e)
         {
             //Update();
@@ -202,6 +202,7 @@ namespace ProjectClient
             //Draw();
         }
 
+        //update enemy movement
         public void UpdatePlayerByServer(int X, int Y, string connectionId)
         {
             if (this.connectionId != connectionId)
@@ -215,6 +216,7 @@ namespace ProjectClient
         
         private void UpdatePlayerPosition(int pos)
         {
+            //need to fix if's to not let player step on wall
             switch (pos)
             {
                 case LEFT:
