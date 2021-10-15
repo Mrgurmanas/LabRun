@@ -21,7 +21,6 @@ namespace ProjectClient.Class.Observer
 
         public void NotifyAll()
         {
-            //TODO: 
             foreach (IObserver observer in observers)
             {
                 observer.Update();
