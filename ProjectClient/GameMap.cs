@@ -354,32 +354,32 @@ namespace ProjectClient
             switch (pos)
             {
                 case LEFT:
-                    if (player1.X - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X - 1, player1.Y] != WALL_ID && MapMatrix[player1.X - 1, player1.Y] != PLAYER_ID))
-                    {
+                  //  if (player1.X - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X - 1, player1.Y] != WALL_ID && MapMatrix[player1.X - 1, player1.Y] != PLAYER_ID))
+                 //   {
                         SetMap(player1.X, player1.Y, SPACE_ID);
                         player1.X = player1.X - 1;
-                    }
+                  //  }
                     break;
                 case UP:
-                    if (player1.Y - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X, player1.Y - 1] != WALL_ID && MapMatrix[player1.X, player1.Y - 1] != PLAYER_ID))
-                    {
+                  //  if (player1.Y - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X, player1.Y - 1] != WALL_ID && MapMatrix[player1.X, player1.Y - 1] != PLAYER_ID))
+                  //  {
                         SetMap(player1.X, player1.Y, SPACE_ID);
                         player1.Y = player1.Y - 1;
-                    }
+                  //  }
                     break;
                 case RIGHT:
-                    if (player1.X + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X + 1, player1.Y] != WALL_ID && MapMatrix[player1.X + 1, player1.Y] != PLAYER_ID))
-                    {
+                  //  if (player1.X + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X + 1, player1.Y] != WALL_ID && MapMatrix[player1.X + 1, player1.Y] != PLAYER_ID))
+                  //  {
                         SetMap(player1.X, player1.Y, SPACE_ID);
                         player1.X = player1.X + 1;
-                    }
+                   // }
                     break;
                 case DOWN:
-                    if (player1.Y + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X, player1.Y + 1] != WALL_ID && MapMatrix[player1.X, player1.Y + 1] != PLAYER_ID))
-                    {
+                   // if (player1.Y + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X, player1.Y + 1] != WALL_ID && MapMatrix[player1.X, player1.Y + 1] != PLAYER_ID))
+                   // {
                         SetMap(player1.X, player1.Y, SPACE_ID);
                         player1.Y = player1.Y + 1;
-                    }
+                   // }
                     break;
             }
             connection.InvokeCoreAsync("UpdatePlayerPos", args: new[] { player1.X.ToString(), player1.Y.ToString(), connectionId, groupName });
