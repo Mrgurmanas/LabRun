@@ -16,7 +16,7 @@ namespace ProjectClient
 {
     public partial class GameMap : Form
     {
-        HubConnection connection;
+        Connection connection;
         private string connectionId;
         private string groupName;
 
@@ -78,27 +78,13 @@ namespace ProjectClient
             { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }};
 
-        public GameMap(List<string> groupPlayers, string groupName, string connectionId, HubConnection connection)
+        public GameMap(List<string> groupPlayers, string groupName, string connectionId, Connection connection)
         {
             InitializeComponent();
             this.connection = connection;
             this.connectionId = connectionId;
             this.groupName = groupName;
             this.groupPlayers = groupPlayers;
-
-            /*this.connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5000/gamehub")
-                .Build();
-
-            connection.On("UpdatePlayers", (int X, int Y, string connectionId, string groupName) =>
-            {
-                connection.InvokeCoreAsync("ConnectionTest", args: new[] { "conenction UpdatePlayers" });
-                UpdatePlayerByServer(X, Y, connectionId);
-            });
-
-            connection.StartAsync();
-            connection.InvokeCoreAsync("ConnectionTest", args: new[] { "testing connection" });
-            */
 
             g = canvas.CreateGraphics();
             MapMatrix = DefaultMap;
@@ -160,7 +146,6 @@ namespace ProjectClient
             GraphicalElement wall4 = creator.FactoryMethod(WALL_ID);
 
             //Observer
-            //List<Item> items = new List<Item>();
             Subject subject = new Server();
 
             Item testCoin = new Coin();
@@ -328,12 +313,9 @@ namespace ProjectClient
             Draw();
         }
 
-        //dont need ?
+        //dont need 
         private void GameTimer(object sender, EventArgs e)
         {
-            //Update();
-            //UpdateMap();
-            //Draw();
         }
 
         //update enemy movement
@@ -341,6 +323,7 @@ namespace ProjectClient
         {
             if (this.connectionId != connectionId)
             {
+                SetMap(player2.X, player2.Y, SPACE_ID);
                 player2.X = X;
                 player2.Y = Y;
                 UpdateMap();
@@ -382,7 +365,7 @@ namespace ProjectClient
                    // }
                     break;
             }
-            connection.InvokeCoreAsync("UpdatePlayerPos", args: new[] { player1.X.ToString(), player1.Y.ToString(), connectionId, groupName });
+            connection.GameMapUpdatePlayerPos(player1.X.ToString(), player1.Y.ToString(), connectionId, groupName);
 
             UpdateMap();
             Draw();
@@ -398,6 +381,9 @@ namespace ProjectClient
             //update map from GraphicElements objects
             MapMatrix[player1.Y, player1.X] = PLAYER_ID;
             MapMatrix[player2.Y, player2.X] = PLAYER_ID;
+
+            ObjectMatrix[player1.Y, player1.X] = player1;
+            ObjectMatrix[player2.Y, player2.X] = player1;
         }
 
         private void Draw()
