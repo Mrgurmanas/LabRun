@@ -72,6 +72,11 @@ namespace ProjectClient.Class
             };*/
         }
 
+        public void SpawnCoin(int x, int y, string groupName)
+        {
+            connection.InvokeCoreAsync("SpawnCoin", args: new[] { x.ToString(), y.ToString(), groupName });
+        }
+
         private void ServerResponseHandling()
         {
             connection.On("UpdatePlayers", (int X, int Y, string connectionId, string groupName) =>
@@ -80,6 +85,11 @@ namespace ProjectClient.Class
                 connection.InvokeCoreAsync("ConnectionTest", args: new[] { "conenction UpdatePlayers" });
                 //connection.InvokeCoreAsync("ConnectionTest", args: new[] { "conenction UpdatePlayers" });
                 gameMap.UpdatePlayerByServer(X, Y, connectionId);
+            });
+
+            connection.On("SpawnCoin", (int X, int Y) =>
+            {
+                gameMap.SpawnCoinByServer(X, Y);
             });
 
             connection.On("ReceiveMessage", (string userName, string message) =>

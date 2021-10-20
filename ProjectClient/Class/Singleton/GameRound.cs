@@ -10,6 +10,8 @@ namespace ProjectClient.Class
 
         private int Player1Score { get; set; }
         private int Player2Score { get; set; }
+        private int CurrentCoin { get; set; }
+        public const int MAX_COIN_COUNT = 20;
 
         private static class SingletonHolder
         {
@@ -21,12 +23,26 @@ namespace ProjectClient.Class
             //singleton initialized
             this.Player1Score = 0;
             this.Player2Score = 0;
+            CurrentCoin = 0;
         }
 
         public static GameRound getInstance()
         {
             //singleton initialized via holder
             return SingletonHolder.instance;
+        }
+
+        public void UpdateCurrentCoin()
+        {
+            if(CurrentCoin < MAX_COIN_COUNT)
+            {
+                CurrentCoin += 1;
+            }
+        }
+
+        public int GetCurrentCoin()
+        {
+            return CurrentCoin;
         }
 
         public int GetPlayerPoints(int playerId)
@@ -53,6 +69,7 @@ namespace ProjectClient.Class
                     Player2Score += points;
                     break;
             }
+            UpdateCurrentCoin();
         }
 
         public void RemovePoints(int points, int playerId)
