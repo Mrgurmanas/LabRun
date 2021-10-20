@@ -157,13 +157,16 @@ namespace ProjectClient
             AbstractFactory itemFactory = null;
 
             Random rnd = new Random();
-            switch (rnd.Next(1, 2))
+            switch (rnd.Next(1, 3))
             {
                 case 1:
                     itemFactory = new DefaultFactory();
                     break;
                 case 2:
                     itemFactory = new UpgradedFactory();
+                    break;
+                case 3:
+                    itemFactory = new UltimateFactory();
                     break;
             }
 
@@ -289,12 +292,22 @@ namespace ProjectClient
                         MapMatrix[x, y] = SPECIAL_WALL_ID;
                     }
 
+                    if (item is UltimateSpecialWall)
+                    {
+                        MapMatrix[x, y] = SPECIAL_WALL_ID;
+                    }
+
                     if (item is DefaultSpikes)
                     {
                         MapMatrix[x, y] = SPIKES_ID;
                     }
 
                     if (item is UpgradedSpikes)
+                    {
+                        MapMatrix[x, y] = SPIKES_ID;
+                    }
+
+                    if (item is UltimateSpikes)
                     {
                         MapMatrix[x, y] = SPIKES_ID;
                     }
