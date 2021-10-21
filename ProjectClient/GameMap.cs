@@ -91,7 +91,7 @@ namespace ProjectClient
             this.groupPlayers = groupPlayers;
 
             g = canvas.CreateGraphics();
-            MapMatrix = DefaultMap;
+            MapMatrix = Transpose(DefaultMap);
             CreateObjectMatrix();
 
             if (groupPlayers.Count == GROUP_SIZE)
@@ -143,6 +143,24 @@ namespace ProjectClient
             //Draw();
         }
 
+        public int[,] Transpose(int[,] matrix)
+        {
+            int w = matrix.GetLength(0);
+            int h = matrix.GetLength(1);
+
+            int[,] result = new int[h, w];
+
+            for (int i = 0; i < w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    result[j, i] = matrix[i, j];
+                }
+            }
+
+            return result;
+        }
+
         private void CreateObjectMatrix()
         {
             //Factory
@@ -177,7 +195,7 @@ namespace ProjectClient
             {
                 for (int j = 0; j < 21; j++)
                 {
-                    int blockId = MapMatrix[j, i];
+                    int blockId = MapMatrix[i, j];
 
                     switch (blockId)
                     {
@@ -500,36 +518,36 @@ namespace ProjectClient
             switch (pos)
             {
                 case LEFT:
-                    //  if (player1.X - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X - 1, player1.Y] != WALL_ID && MapMatrix[player1.X - 1, player1.Y] != PLAYER_ID))
-                    //   {
-                    CheckForItem(player1 as Player, player1.X - 1, player1.Y);
-                    SetMap(player1.X, player1.Y, SPACE_ID);
-                    player1.X = player1.X - 1;
-                    //  }
+                    if (player1.X - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X - 1, player1.Y] != WALL_ID && MapMatrix[player1.X - 1, player1.Y] != PLAYER_ID))
+                    {
+                        CheckForItem(player1 as Player, player1.X - 1, player1.Y);
+                        SetMap(player1.X, player1.Y, SPACE_ID);
+                        player1.X = player1.X - 1;
+                    }
                     break;
                 case UP:
-                    //  if (player1.Y - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X, player1.Y - 1] != WALL_ID && MapMatrix[player1.X, player1.Y - 1] != PLAYER_ID))
-                    //  {
+                      if (player1.Y - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X, player1.Y - 1] != WALL_ID && MapMatrix[player1.X, player1.Y - 1] != PLAYER_ID))
+                      {
                     CheckForItem(player1 as Player, player1.X, player1.Y - 1);
                     SetMap(player1.X, player1.Y, SPACE_ID);
                     player1.Y = player1.Y - 1;
-                    //  }
+                      }
                     break;
                 case RIGHT:
-                    //  if (player1.X + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X + 1, player1.Y] != WALL_ID && MapMatrix[player1.X + 1, player1.Y] != PLAYER_ID))
-                    //  {
+                      if (player1.X + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X + 1, player1.Y] != WALL_ID && MapMatrix[player1.X + 1, player1.Y] != PLAYER_ID))
+                      {
                     CheckForItem(player1 as Player, player1.X + 1, player1.Y);
                     SetMap(player1.X, player1.Y, SPACE_ID);
                     player1.X = player1.X + 1;
-                    // }
+                     }
                     break;
                 case DOWN:
-                    // if (player1.Y + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X, player1.Y + 1] != WALL_ID && MapMatrix[player1.X, player1.Y + 1] != PLAYER_ID))
-                    // {
+                     if (player1.Y + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X, player1.Y + 1] != WALL_ID && MapMatrix[player1.X, player1.Y + 1] != PLAYER_ID))
+                     {
                     CheckForItem(player1 as Player, player1.X, player1.Y + 1);
                     SetMap(player1.X, player1.Y, SPACE_ID);
                     player1.Y = player1.Y + 1;
-                    // }
+                     }
                     break;
             }
             connection.GameMapUpdatePlayerPos(player1.X.ToString(), player1.Y.ToString(), connectionId, groupName);
@@ -540,17 +558,17 @@ namespace ProjectClient
 
         private void SetMap(int X, int Y, int id)
         {
-            MapMatrix[Y, X] = id;
+            MapMatrix[X, Y] = id;
         }
 
         private void UpdatePlayersPosMap()
         {
             //update map from GraphicElements objects
-            MapMatrix[player1.Y, player1.X] = PLAYER_ID;
-            MapMatrix[player2.Y, player2.X] = PLAYER_ID;
+            MapMatrix[player1.X, player1.Y] = PLAYER_ID;
+            MapMatrix[player2.X, player2.Y] = PLAYER_ID;
 
-            ObjectMatrix[player1.Y, player1.X] = player1;
-            ObjectMatrix[player2.Y, player2.X] = player1;
+            ObjectMatrix[player1.X, player1.Y] = player1;
+            ObjectMatrix[player2.X, player2.Y] = player1;
         }
 
         private void Draw()
@@ -579,7 +597,7 @@ namespace ProjectClient
             {
                 for (int j = 0; j < 21; j++)
                 {
-                    int blockId = MapMatrix[j, i];
+                    int blockId = MapMatrix[i, j];
                     GraphicalElement element = ObjectMatrix[i, j];
 
                     if (blockId != SPIKES_ID)
