@@ -197,6 +197,8 @@ namespace ProjectClient
                 {
                     int blockId = MapMatrix[i, j];
 
+                    GraphicalElement block = null;
+
                     switch (blockId)
                     {
                         case EMPTY_ID:
@@ -206,26 +208,29 @@ namespace ProjectClient
                         case PLAYER_ID:
                             break;
                         case WALL_ID:
-                            GraphicalElement wall = creator.FactoryMethod(WALL_ID);
-                            creator.FactoryMethod(WALL_ID);
-                            ObjectMatrix[i, j] = wall;
+                            block = creator.FactoryMethod(WALL_ID);
                             break;
                         case COIN_ID:
-                            GraphicalElement coin = creator.FactoryMethod(COIN_ID);
-                            ObjectMatrix[i, j] = coin;
+                            block = creator.FactoryMethod(COIN_ID);
                             break;
                         case SPECIAL_WALL_ID:
-                            GraphicalElement specwall = creator.FactoryMethod(SPECIAL_WALL_ID);
-                            ObjectMatrix[i, j] = specwall;
+                            block = creator.FactoryMethod(SPECIAL_WALL_ID);
                             break;
                         case DESTROYER_ID:
-                            GraphicalElement destroyer = creator.FactoryMethod(DESTROYER_ID);
-                            ObjectMatrix[i, j] = destroyer;
+                            block = creator.FactoryMethod(DESTROYER_ID);
                             break;
                         case SPIKES_ID:
-                            GraphicalElement spikes = creator.FactoryMethod(SPIKES_ID);
-                            ObjectMatrix[i, j] = spikes;
+                            block = creator.FactoryMethod(SPIKES_ID);
                             break;
+                        default:
+                            block = null;
+                            break;
+                    }
+                    if (block != null)
+                    {
+                        block.X = i;
+                        block.Y = j;
+                        ObjectMatrix[i, j] = block;
                     }
                 }
             }
@@ -526,28 +531,28 @@ namespace ProjectClient
                     }
                     break;
                 case UP:
-                      if (player1.Y - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X, player1.Y - 1] != WALL_ID && MapMatrix[player1.X, player1.Y - 1] != PLAYER_ID))
-                      {
-                    CheckForItem(player1 as Player, player1.X, player1.Y - 1);
-                    SetMap(player1.X, player1.Y, SPACE_ID);
-                    player1.Y = player1.Y - 1;
-                      }
+                    if (player1.Y - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X, player1.Y - 1] != WALL_ID && MapMatrix[player1.X, player1.Y - 1] != PLAYER_ID))
+                    {
+                        CheckForItem(player1 as Player, player1.X, player1.Y - 1);
+                        SetMap(player1.X, player1.Y, SPACE_ID);
+                        player1.Y = player1.Y - 1;
+                    }
                     break;
                 case RIGHT:
-                      if (player1.X + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X + 1, player1.Y] != WALL_ID && MapMatrix[player1.X + 1, player1.Y] != PLAYER_ID))
-                      {
-                    CheckForItem(player1 as Player, player1.X + 1, player1.Y);
-                    SetMap(player1.X, player1.Y, SPACE_ID);
-                    player1.X = player1.X + 1;
-                     }
+                    if (player1.X + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X + 1, player1.Y] != WALL_ID && MapMatrix[player1.X + 1, player1.Y] != PLAYER_ID))
+                    {
+                        CheckForItem(player1 as Player, player1.X + 1, player1.Y);
+                        SetMap(player1.X, player1.Y, SPACE_ID);
+                        player1.X = player1.X + 1;
+                    }
                     break;
                 case DOWN:
-                     if (player1.Y + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X, player1.Y + 1] != WALL_ID && MapMatrix[player1.X, player1.Y + 1] != PLAYER_ID))
-                     {
-                    CheckForItem(player1 as Player, player1.X, player1.Y + 1);
-                    SetMap(player1.X, player1.Y, SPACE_ID);
-                    player1.Y = player1.Y + 1;
-                     }
+                    if (player1.Y + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X, player1.Y + 1] != WALL_ID && MapMatrix[player1.X, player1.Y + 1] != PLAYER_ID))
+                    {
+                        CheckForItem(player1 as Player, player1.X, player1.Y + 1);
+                        SetMap(player1.X, player1.Y, SPACE_ID);
+                        player1.Y = player1.Y + 1;
+                    }
                     break;
             }
             connection.GameMapUpdatePlayerPos(player1.X.ToString(), player1.Y.ToString(), connectionId, groupName);
@@ -588,7 +593,7 @@ namespace ProjectClient
             //drawFormat.FormatFlags = StringFormatFlags.DirectionVertical;
 
             // Draw string to screen.
-            g.DrawString(coinsLeft, drawFont, drawBrush, ((MAP_MAX_SIZE / 2)-1) * BLOCK_SIZE, MAP_MAX_SIZE / 2 * BLOCK_SIZE, drawFormat);
+            g.DrawString(coinsLeft, drawFont, drawBrush, ((MAP_MAX_SIZE / 2) - 1) * BLOCK_SIZE, MAP_MAX_SIZE / 2 * BLOCK_SIZE, drawFormat);
 
             Rectangle rectangle = new Rectangle();
             PointF[] triangle = new PointF[3];
