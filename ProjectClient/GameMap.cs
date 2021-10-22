@@ -377,6 +377,13 @@ namespace ProjectClient
             Draw();
         }
 
+        public void AddPlayerPointsByServer(int points, string connectionId)
+        {
+            int playerId = groupPlayers.IndexOf(connectionId) + 1;
+            gameRound.AddPoints(points, playerId);
+            UpdateGame();
+        }
+
         //update enemy movement
         public void UpdatePlayerByServer(int X, int Y, string connectionId)
         {
@@ -434,11 +441,13 @@ namespace ProjectClient
                     currentRoundPoint = updatedRoundPoint;
                     Coin coin = null;
                     AbstractFactory specialItem;
+                    bool end = false;
 
                     switch (currentRoundPoint)
                     {
                         case -1:
                             //end of game 
+                            end = true;
                             break;
                         case 5:
                             //spawn coin and item
@@ -450,15 +459,17 @@ namespace ProjectClient
                             break;
                         case 15:
                             //spawn coin and item
-
                             break;
                         default:
-                            //spawn coin
-                            coin = new Coin();
-                            coin = RandomSpawnItemToMap(coin) as Coin;
-                            connection.SpawnCoin(coin.X, coin.Y, groupName);
                             break;
+                    }
 
+                    if (!end)
+                    {
+                        //spawn coin
+                        coin = new Coin();
+                        coin = RandomSpawnItemToMap(coin) as Coin;
+                        connection.SpawnCoin(coin.X, coin.Y, groupName);
                     }
                 }
             }
@@ -480,7 +491,8 @@ namespace ProjectClient
                     case WALL_ID:
                         break;
                     case COIN_ID:
-                        gameRound.AddPoints((element as Coin).Value, PLAYER_ID);
+                        //gameRound.AddPoints((element as Coin).Value, PLAYER_ID);
+                        connection.AddPlayerPoints((element as Coin).Value, connectionId, groupName);
                         break;
                     case SPECIAL_WALL_ID:
                         if (element is DefaultSpecialWall)
@@ -514,7 +526,7 @@ namespace ProjectClient
                         break;
                 }
             }
-            UpdateGame();
+            //UpdateGame();
         }
 
         private void UpdatePlayerPosition(int pos)
@@ -583,6 +595,8 @@ namespace ProjectClient
 
             // Create string to draw.
             String coinsLeft = (GameRound.MAX_COIN_COUNT - gameRound.GetCurrentCoin()) + " coins";
+            String player1Score = gameRound.GetPlayerPoints(PLAYER_1_ID) + " points";
+            String player2Score = gameRound.GetPlayerPoints(PLAYER_2_ID) + " points";
 
             // Create font and brush.
             Font drawFont = new Font("Arial", 16);
@@ -594,6 +608,8 @@ namespace ProjectClient
 
             // Draw string to screen.
             g.DrawString(coinsLeft, drawFont, drawBrush, ((MAP_MAX_SIZE / 2) - 1) * BLOCK_SIZE, MAP_MAX_SIZE / 2 * BLOCK_SIZE, drawFormat);
+            g.DrawString(player2Score, drawFont, drawBrush, (MAP_MAX_SIZE - 3) * BLOCK_SIZE, ((MAP_MAX_SIZE / 2) - 3) * BLOCK_SIZE, drawFormat);
+            g.DrawString(player1Score, drawFont, drawBrush, (MAP_MIN_SIZE + 1) * BLOCK_SIZE, ((MAP_MAX_SIZE / 2) - 3) * BLOCK_SIZE, drawFormat);
 
             Rectangle rectangle = new Rectangle();
             PointF[] triangle = new PointF[3];

@@ -77,6 +77,11 @@ namespace ProjectClient.Class
             connection.InvokeCoreAsync("SpawnCoin", args: new[] { x.ToString(), y.ToString(), groupName });
         }
 
+        public void AddPlayerPoints(int points, string connectionId, string groupName)
+        {
+            connection.InvokeCoreAsync("AddPlayerPoints", args: new[] { points.ToString(), connectionId, groupName });
+        }
+
         private void ServerResponseHandling()
         {
             connection.On("UpdatePlayers", (int X, int Y, string connectionId, string groupName) =>
@@ -90,6 +95,11 @@ namespace ProjectClient.Class
             connection.On("SpawnCoin", (int X, int Y) =>
             {
                 gameMap.SpawnCoinByServer(X, Y);
+            });
+
+            connection.On("AddPlayerPoints", (int points, string connectionId) =>
+            {
+                gameMap.AddPlayerPointsByServer(points, connectionId);
             });
 
             connection.On("ReceiveMessage", (string userName, string message) =>

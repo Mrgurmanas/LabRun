@@ -114,6 +114,12 @@ namespace ProjectServer
             return Clients.Group(groupName).SendAsync("SpawnCoin", x, y);
         }
 
+        public Task AddPlayerPoints(string points, string connectionId, string groupName)
+        {
+            int pointsInt = int.Parse(points);
+            return Clients.Group(groupName).SendAsync("AddPlayerPoints", pointsInt, connectionId);
+        }
+
         public Task UpdatePlayerPos(string X, string Y, string connectionId, string groupName)
         {
             Console.WriteLine("UpdatePlayerPos X: " + X + " Y: " + Y + " connectionId: " + connectionId + " groupName: " + groupName);
