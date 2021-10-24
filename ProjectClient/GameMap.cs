@@ -50,6 +50,12 @@ namespace ProjectClient
         private const int PLAYER_ID = 2;
         private const int COIN_ID = 3;
         private const int ITEM_ID = 4;
+        private const int PLAYER1_INV1_ID = 101;
+        private const int PLAYER1_INV2_ID = 102;
+        private const int PLAYER1_INV3_ID = 103;
+        private const int PLAYER2_INV1_ID = 201;
+        private const int PLAYER2_INV2_ID = 202;
+        private const int PLAYER2_INV3_ID = 203;
 
         private const int SPECIAL_WALL_ID = 10;
         private const int SPIKES_ID = 20;
@@ -68,7 +74,7 @@ namespace ProjectClient
             { 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1 },
             { 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1 },
             { 1, 5, 5, 5, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5, 5, 5, 1 },
-            { 1, 10, 20, 40, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 10, 20, 40, 1 },
+            { 1, 101, 102, 103, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 201, 202, 203, 1 },
             { 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1 },
             { 1, 2, 0, 0, 0, 0, 0, 0, 1, 5, 5, 5, 1, 0, 0, 0, 0, 0, 0, 2, 1 },
             { 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1 },
@@ -338,34 +344,93 @@ namespace ProjectClient
         {
         }
 
-        public void SpawnSpecialItemByServer(int X, int Y, int itemID, int level)
+        public void AddPlayerItemByServer(int itemId, string connectionId)
         {
-            //Abstract Factory
-            AbstractFactory itemFactory = null;
-
-            switch (level)
+            switch (groupPlayers.IndexOf(connectionId))
             {
+                case 0:
+                    (player1 as Player).inventory.AddItem(itemId);
+                    break;
                 case 1:
-                    itemFactory = new DefaultFactory();
-                    break;
-                case 2:
-                    itemFactory = new UpgradedFactory();
-                    break;
-                case 3:
-                    itemFactory = new UltimateFactory();
+                    (player2 as Player).inventory.AddItem(itemId);
                     break;
             }
+            Draw();
+        }
 
-            switch (itemID)
+        public void SpawnSpecialItemByServer(int X, int Y, int itemId)
+        {
+            if (!MainPlayer)
             {
-                case 1:
-                    ObjectMatrix[X, Y] = itemFactory.createSpecialWall();
-                    MapMatrix[X, Y] = SPECIAL_WALL_ID;
-                    break;
-                case 2:
-                    ObjectMatrix[X, Y] = itemFactory.createSpikes();
-                    MapMatrix[X, Y] = SPIKES_ID;
-                    break;
+                //Abstract Factory
+                AbstractFactory itemFactory = null;
+                Item item = null;
+
+                switch (itemId)
+                {
+                    case Item.DEFAULT_SPECIAL_WALL_ID:
+                        itemFactory = new DefaultFactory();
+                        item = itemFactory.createSpecialWall();
+                        item.X = X;
+                        item.Y = Y;
+                        ObjectMatrix[X, Y] = item;
+                        MapMatrix[X, Y] = SPECIAL_WALL_ID;
+                        break;
+                    case Item.UPGRADED_SPECIAL_WALL_ID:
+                        itemFactory = new UpgradedFactory();
+                        item = itemFactory.createSpecialWall();
+                        item.X = X;
+                        item.Y = Y;
+                        ObjectMatrix[X, Y] = item;
+                        MapMatrix[X, Y] = SPECIAL_WALL_ID;
+                        break;
+                    case Item.ULTIMATE_SPECIAL_WALL_ID:
+                        itemFactory = new UltimateFactory();
+                        item = itemFactory.createSpecialWall();
+                        item.X = X;
+                        item.Y = Y;
+                        ObjectMatrix[X, Y] = item;
+                        MapMatrix[X, Y] = SPECIAL_WALL_ID;
+                        break;
+                    case Item.DEFAULT_SPIKES_ID:
+                        itemFactory = new DefaultFactory();
+                        item = itemFactory.createSpikes();
+                        item.X = X;
+                        item.Y = Y;
+                        ObjectMatrix[X, Y] = item;
+                        MapMatrix[X, Y] = SPIKES_ID;
+                        break;
+                    case Item.UPGRADED_SPIKES_ID:
+                        itemFactory = new UpgradedFactory();
+                        item = itemFactory.createSpikes();
+                        item.X = X;
+                        item.Y = Y;
+                        ObjectMatrix[X, Y] = item;
+                        MapMatrix[X, Y] = SPIKES_ID;
+                        break;
+                    case Item.ULTIMATE_SPIKES_ID:
+                        itemFactory = new UltimateFactory();
+                        item = itemFactory.createSpikes();
+                        item.X = X;
+                        item.Y = Y;
+                        ObjectMatrix[X, Y] = item;
+                        MapMatrix[X, Y] = SPIKES_ID;
+                        break;
+                    case Item.COIN_ID:
+                        item = new Coin();
+                        item.X = X;
+                        item.Y = Y;
+                        ObjectMatrix[X, Y] = item;
+                        MapMatrix[X, Y] = Item.COIN_ID;
+                        break;
+                    case Item.DESTROYER_ID:
+                        item = new Destroyer();
+                        item.X = X;
+                        item.Y = Y;
+                        ObjectMatrix[X, Y] = item;
+                        MapMatrix[X, Y] = Item.DESTROYER_ID;
+                        break;
+                }
             }
         }
 
@@ -397,7 +462,7 @@ namespace ProjectClient
             }
         }
 
-        private void RandomizeSpecialItem()
+        private Item RandomizeSpecialItem()
         {
             //Abstract Factory
             //randomizing special item level
@@ -422,12 +487,11 @@ namespace ProjectClient
             switch (rnd.Next(1, 2))
             {
                 case 1:
-                    RandomSpawnItemToMap(itemFactory.createSpecialWall());
-                    break;
+                    return itemFactory.createSpecialWall();
                 case 2:
-                    RandomSpawnItemToMap(itemFactory.createSpikes());
-                    break;
+                    return itemFactory.createSpikes();
             }
+            return null;
         }
 
         //game spawn logic
@@ -440,7 +504,7 @@ namespace ProjectClient
                 {
                     currentRoundPoint = updatedRoundPoint;
                     Coin coin = null;
-                    AbstractFactory specialItem;
+                    Item item = null;
                     bool end = false;
 
                     switch (currentRoundPoint)
@@ -451,14 +515,21 @@ namespace ProjectClient
                             break;
                         case 5:
                             //spawn coin and item
-
+                            item = RandomizeSpecialItem();
+                            item = RandomSpawnItemToMap(item);
+                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), groupName);
                             break;
                         case 10:
                             //spawn coin and item
-
+                            item = RandomizeSpecialItem();
+                            item = RandomSpawnItemToMap(item);
+                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), groupName);
                             break;
                         case 15:
                             //spawn coin and item
+                            item = RandomizeSpecialItem();
+                            item = RandomSpawnItemToMap(item);
+                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), groupName);
                             break;
                         default:
                             break;
@@ -490,35 +561,62 @@ namespace ProjectClient
                         break;
                     case WALL_ID:
                         break;
-                    case COIN_ID:
-                        //gameRound.AddPoints((element as Coin).Value, PLAYER_ID);
+                    case Item.COIN_ID:
                         connection.AddPlayerPoints((element as Coin).Value, connectionId, groupName);
                         break;
                     case SPECIAL_WALL_ID:
                         if (element is DefaultSpecialWall)
                         {
+                            if (player.inventory.CanAddItem())
+                            {
+                                connection.AddPlayerItem(Item.DEFAULT_SPECIAL_WALL_ID, connectionId, groupName);
+                            }
                         }
                         else if (element is UpgradedSpecialWall)
                         {
+                            if (player.inventory.CanAddItem())
+                            {
+                                connection.AddPlayerItem(Item.UPGRADED_SPECIAL_WALL_ID, connectionId, groupName);
+                            }
                         }
                         else if (element is UltimateSpecialWall)
                         {
+                            if (player.inventory.CanAddItem())
+                            {
+                                connection.AddPlayerItem(Item.ULTIMATE_SPECIAL_WALL_ID, connectionId, groupName);
+                            }
                         }
                         else
                         {
                         }
                         break;
-                    case DESTROYER_ID:
+                    case Item.DESTROYER_ID:
+                        if (player.inventory.CanAddItem())
+                        {
+                            connection.AddPlayerItem(Item.DESTROYER_ID, connectionId, groupName);
+                        }
                         break;
                     case SPIKES_ID:
                         if (element is DefaultSpikes)
                         {
+                            if (player.inventory.CanAddItem())
+                            {
+                                connection.AddPlayerItem(Item.DEFAULT_SPIKES_ID, connectionId, groupName);
+                            }
                         }
                         else if (element is UpgradedSpikes)
                         {
+                            if (player.inventory.CanAddItem())
+                            {
+                                connection.AddPlayerItem(Item.UPGRADED_SPIKES_ID, connectionId, groupName);
+                            }
                         }
                         else if (element is UltimateSpikes)
                         {
+                            if (player.inventory.CanAddItem())
+                            {
+                                connection.AddPlayerItem(Item.ULTIMATE_SPIKES_ID, connectionId, groupName);
+                            }
                         }
                         else
                         {
@@ -621,6 +719,7 @@ namespace ProjectClient
 
             Rectangle rectangle = new Rectangle();
             PointF[] triangle = new PointF[3];
+            int itemId = -1;
 
             for (int i = 0; i < 21; i++)
             {
@@ -655,6 +754,48 @@ namespace ProjectClient
 
                     switch (blockId)
                     {
+                        case PLAYER1_INV1_ID:
+                            itemId = (player1 as Player).inventory.GetItem(0);
+                            if (itemId != -1)
+                            {
+                                DrawItem(itemId, i, j);
+                            }
+                            break;
+                        case PLAYER1_INV2_ID:
+                            itemId = (player1 as Player).inventory.GetItem(1);
+                            if (itemId != -1)
+                            {
+                                DrawItem(itemId, i, j);
+                            }
+                            break;
+                        case PLAYER1_INV3_ID:
+                            itemId = (player1 as Player).inventory.GetItem(2);
+                            if (itemId != -1)
+                            {
+                                DrawItem(itemId, i, j);
+                            }
+                            break;
+                        case PLAYER2_INV1_ID:
+                            itemId = (player2 as Player).inventory.GetItem(0);
+                            if (itemId != -1)
+                            {
+                                DrawItem(itemId, i, j);
+                            }
+                            break;
+                        case PLAYER2_INV2_ID:
+                            itemId = (player2 as Player).inventory.GetItem(1);
+                            if (itemId != -1)
+                            {
+                                DrawItem(itemId, i, j);
+                            }
+                            break;
+                        case PLAYER2_INV3_ID:
+                            itemId = (player2 as Player).inventory.GetItem(2);
+                            if (itemId != -1)
+                            {
+                                DrawItem(itemId, i, j);
+                            }
+                            break;
                         case SPACE_ID:
                             //g.FillRectangle(Brushes.GreenYellow, rectangle);
                             break;
@@ -709,6 +850,48 @@ namespace ProjectClient
                             break;
                     }
                 }
+            }
+        }
+
+        private void DrawItem(int itemId, int i, int j)
+        {
+            Rectangle rectangle = new Rectangle();
+            PointF[] triangle = new PointF[3];
+            
+                rectangle = new Rectangle(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            
+                PointF point1 = new PointF(i * BLOCK_SIZE, (j + 1) * BLOCK_SIZE);
+                PointF point2 = new PointF((i * BLOCK_SIZE) + (BLOCK_SIZE / 2), (j * BLOCK_SIZE));
+                PointF point3 = new PointF((i * BLOCK_SIZE) + BLOCK_SIZE, (j + 1) * BLOCK_SIZE);
+                triangle[0] = point1;
+                triangle[1] = point2;
+                triangle[2] = point3;
+            
+            switch (itemId)
+            {
+                case Item.DEFAULT_SPECIAL_WALL_ID:
+                    g.FillRectangle(Brushes.DeepSkyBlue, rectangle);
+                    break;
+                case Item.UPGRADED_SPECIAL_WALL_ID:
+                    g.FillRectangle(Brushes.DarkBlue, rectangle);
+                    break;
+                case Item.ULTIMATE_SPECIAL_WALL_ID:
+                    g.FillRectangle(Brushes.DarkMagenta, rectangle);
+                    break;
+                case Item.DEFAULT_SPIKES_ID:
+                    g.FillPolygon(Brushes.DeepSkyBlue, triangle);
+                    break;
+                case Item.UPGRADED_SPIKES_ID:
+                    g.FillPolygon(Brushes.DarkBlue, triangle);
+                    break;
+                case Item.ULTIMATE_SPIKES_ID:
+                    g.FillPolygon(Brushes.DarkMagenta, triangle);
+                    break;
+                case Item.COIN_ID:
+                    break;
+                case Item.DESTROYER_ID:
+                    g.FillRectangle(Brushes.DarkMagenta, rectangle);
+                    break;
             }
         }
 

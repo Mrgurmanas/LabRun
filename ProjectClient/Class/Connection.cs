@@ -82,6 +82,16 @@ namespace ProjectClient.Class
             connection.InvokeCoreAsync("AddPlayerPoints", args: new[] { points.ToString(), connectionId, groupName });
         }
 
+        public void SpawnSpecialItem(int x, int y, int id, string groupName)
+        {
+            connection.InvokeCoreAsync("SpawnSpecialItem", args: new[] { x.ToString(), y.ToString(), id.ToString(), groupName });
+        }
+
+        public void AddPlayerItem(int itemId, string connectionId, string groupName)
+        {
+            connection.InvokeCoreAsync("AddPlayerItem", args: new[] { itemId.ToString(), connectionId, groupName });
+        }
+
         private void ServerResponseHandling()
         {
             connection.On("UpdatePlayers", (int X, int Y, string connectionId, string groupName) =>
@@ -100,6 +110,16 @@ namespace ProjectClient.Class
             connection.On("AddPlayerPoints", (int points, string connectionId) =>
             {
                 gameMap.AddPlayerPointsByServer(points, connectionId);
+            });
+
+            connection.On("SpawnSpecialItem", (int X, int Y, int id) =>
+            {
+                gameMap.SpawnSpecialItemByServer(X, Y, id);
+            });
+
+            connection.On("AddPlayerItem", (int itemId, string connectionId) =>
+            {
+                gameMap.AddPlayerItemByServer(itemId, connectionId);
             });
 
             connection.On("ReceiveMessage", (string userName, string message) =>

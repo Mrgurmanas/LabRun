@@ -120,6 +120,20 @@ namespace ProjectServer
             return Clients.Group(groupName).SendAsync("AddPlayerPoints", pointsInt, connectionId);
         }
 
+        public Task SpawnSpecialItem(string X, string Y, string ID,  string groupName)
+        {
+            int x = int.Parse(X);
+            int y = int.Parse(Y);
+            int id = int.Parse(ID);
+            return Clients.Group(groupName).SendAsync("SpawnSpecialItem", x, y, id);
+        }
+        
+        public Task AddPlayerItem(string itemId, string connectionId, string groupName)
+        {
+            int id = int.Parse(itemId);
+            return Clients.Group(groupName).SendAsync("AddPlayerItem", id, connectionId);
+        }
+
         public Task UpdatePlayerPos(string X, string Y, string connectionId, string groupName)
         {
             Console.WriteLine("UpdatePlayerPos X: " + X + " Y: " + Y + " connectionId: " + connectionId + " groupName: " + groupName);
