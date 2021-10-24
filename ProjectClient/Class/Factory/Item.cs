@@ -25,6 +25,7 @@ namespace ProjectClient.Class.Factory
 
         public int State { get; set; }
         public bool Visibility { get; set; }
+        public string PlayerConnection { get; set; } = null;
 
         public Subject subject;
 

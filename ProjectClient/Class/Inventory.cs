@@ -29,14 +29,25 @@ namespace ProjectClient.Class
             return false;
         }
 
-        public bool RemoveFirstItem()
+        public bool RemoveItem()
         {
-            if (inventoryList.Count > 0)
+            if(inventoryList.Count > 0)
             {
                 inventoryList.RemoveAt(0);
                 return true;
             }
             return false;
+        }
+
+        public int UseItem()
+        {
+            int item = -1;
+            if (inventoryList.Count > 0)
+            {
+                item = inventoryList[0];
+                inventoryList.RemoveAt(0);
+            }
+            return item;
         }
 
         public int GetItem(int index)

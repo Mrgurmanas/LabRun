@@ -105,7 +105,7 @@ namespace ProjectClient
                 switch (groupPlayers.IndexOf(connectionId))
                 {
                     case 0:
-                        txtPlayerId.Text = "Player: " + groupPlayers[0];
+                        txtPlayerId.Text = "MainPlayer: " + groupPlayers[0];
                         txtPlayer2Id.Text = "Player: " + groupPlayers[1];
                         MainPlayer = true;
                         break;
@@ -134,19 +134,6 @@ namespace ProjectClient
             testCoin.UseItem();*/
 
             UpdateGame();
-
-            //Strategy
-            Item itemCoin = new Item();
-
-            //player
-            itemCoin.SetAlgorithm(new PlayerAlgorithm());
-            itemCoin.ItemActivated();
-
-            //enemy 
-            itemCoin.SetAlgorithm(new EnemyAlgorithm());
-            itemCoin.ItemActivated();
-
-            //Draw();
         }
 
         public int[,] Transpose(int[,] matrix)
@@ -344,9 +331,17 @@ namespace ProjectClient
         {
         }
 
-        public void AddPlayerItemByServer(int itemId, string connectionId)
+        public void AddPlayerItemByServer(int itemId, string connection)
         {
-            switch (groupPlayers.IndexOf(connectionId))
+            if(this.connectionId == connection)
+            {
+                (player1 as Player).inventory.AddItem(itemId);
+            }
+            else
+            {
+                (player2 as Player).inventory.AddItem(itemId);
+            }
+            /*switch (groupPlayers.IndexOf(connectionId))
             {
                 case 0:
                     (player1 as Player).inventory.AddItem(itemId);
@@ -354,7 +349,7 @@ namespace ProjectClient
                 case 1:
                     (player2 as Player).inventory.AddItem(itemId);
                     break;
-            }
+            }*/
             Draw();
         }
 
@@ -439,6 +434,96 @@ namespace ProjectClient
             Item coin = new Coin();
             MapMatrix[X, Y] = COIN_ID;
             ObjectMatrix[X, Y] = coin;
+            Draw();
+        }
+
+        public void PlaceItemByServer(int X, int Y, int itemId, string connectionId)
+        {
+            AbstractFactory itemFactory = null;
+            Item item = null;
+
+            if(this.connectionId != connectionId)
+            {
+                (player2 as Player).inventory.RemoveItem();
+            }
+            else
+            {
+                (player1 as Player).inventory.RemoveItem();
+            }
+
+            switch (itemId)
+            {
+                case Item.DEFAULT_SPECIAL_WALL_ID:
+                    itemFactory = new DefaultFactory();
+                    item = itemFactory.createSpecialWall();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = connectionId;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = SPECIAL_WALL_ID;
+                    break;
+                case Item.UPGRADED_SPECIAL_WALL_ID:
+                    itemFactory = new UpgradedFactory();
+                    item = itemFactory.createSpecialWall();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = connectionId;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = SPECIAL_WALL_ID;
+                    break;
+                case Item.ULTIMATE_SPECIAL_WALL_ID:
+                    itemFactory = new UltimateFactory();
+                    item = itemFactory.createSpecialWall();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = connectionId;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = SPECIAL_WALL_ID;
+                    break;
+                case Item.DEFAULT_SPIKES_ID:
+                    itemFactory = new DefaultFactory();
+                    item = itemFactory.createSpikes();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = connectionId;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = SPIKES_ID;
+                    break;
+                case Item.UPGRADED_SPIKES_ID:
+                    itemFactory = new UpgradedFactory();
+                    item = itemFactory.createSpikes();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = connectionId;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = SPIKES_ID;
+                    break;
+                case Item.ULTIMATE_SPIKES_ID:
+                    itemFactory = new UltimateFactory();
+                    item = itemFactory.createSpikes();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = connectionId;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = SPIKES_ID;
+                    break;
+                case Item.COIN_ID:
+                    item = new Coin();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = connectionId;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = Item.COIN_ID;
+                    break;
+                case Item.DESTROYER_ID:
+                    item = new Destroyer();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = connectionId;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = Item.DESTROYER_ID;
+                    break;
+            }
             Draw();
         }
 
@@ -547,81 +632,110 @@ namespace ProjectClient
             Draw();
         }
 
+        private void UseItem(Item item)
+        {
+            //Strategy
+            //player
+            if (item.PlayerConnection == connectionId)
+            {
+                item.SetAlgorithm(new PlayerAlgorithm());
+                item.ItemActivated();
+                //test
+                //gameRound.AddPoints(1000, PLAYER_1_ID);
+            }
+            else
+            {
+                //enemy 
+                item.SetAlgorithm(new EnemyAlgorithm());
+                item.ItemActivated();
+                //test
+                //gameRound.AddPoints(2000, PLAYER_2_ID);
+            }
+        }
+
         private void CheckForItem(Player player, int x, int y)
         {
             int blockId = MapMatrix[x, y];
             if (blockId != SPACE_ID)
             {
                 GraphicalElement element = ObjectMatrix[x, y];
-                switch (blockId)
+                if ((element as Item).PlayerConnection == null)
                 {
-                    case SPACE_ID:
-                        break;
-                    case PLAYER_ID:
-                        break;
-                    case WALL_ID:
-                        break;
-                    case Item.COIN_ID:
-                        connection.AddPlayerPoints((element as Coin).Value, connectionId, groupName);
-                        break;
-                    case SPECIAL_WALL_ID:
-                        if (element is DefaultSpecialWall)
-                        {
+                    switch (blockId)
+                    {
+                        case SPACE_ID:
+                            break;
+                        case PLAYER_ID:
+                            break;
+                        case WALL_ID:
+                            break;
+                        case Item.COIN_ID:
+                            connection.AddPlayerPoints((element as Coin).Value, connectionId, groupName);
+                            break;
+                        case SPECIAL_WALL_ID:
+                            if (element is DefaultSpecialWall)
+                            {
+
+                                if (player.inventory.CanAddItem())
+                                {
+                                    connection.AddPlayerItem(Item.DEFAULT_SPECIAL_WALL_ID, connectionId, groupName);
+                                }
+                            }
+                            else if (element is UpgradedSpecialWall)
+                            {
+                                if (player.inventory.CanAddItem())
+                                {
+                                    connection.AddPlayerItem(Item.UPGRADED_SPECIAL_WALL_ID, connectionId, groupName);
+                                }
+                            }
+                            else if (element is UltimateSpecialWall)
+                            {
+                                if (player.inventory.CanAddItem())
+                                {
+                                    connection.AddPlayerItem(Item.ULTIMATE_SPECIAL_WALL_ID, connectionId, groupName);
+                                }
+                            }
+                            else
+                            {
+                            }
+                            break;
+                        case Item.DESTROYER_ID:
                             if (player.inventory.CanAddItem())
                             {
-                                connection.AddPlayerItem(Item.DEFAULT_SPECIAL_WALL_ID, connectionId, groupName);
+                                connection.AddPlayerItem(Item.DESTROYER_ID, connectionId, groupName);
                             }
-                        }
-                        else if (element is UpgradedSpecialWall)
-                        {
-                            if (player.inventory.CanAddItem())
+                            break;
+                        case SPIKES_ID:
+                            if (element is DefaultSpikes)
                             {
-                                connection.AddPlayerItem(Item.UPGRADED_SPECIAL_WALL_ID, connectionId, groupName);
+                                if (player.inventory.CanAddItem())
+                                {
+                                    connection.AddPlayerItem(Item.DEFAULT_SPIKES_ID, connectionId, groupName);
+                                }
                             }
-                        }
-                        else if (element is UltimateSpecialWall)
-                        {
-                            if (player.inventory.CanAddItem())
+                            else if (element is UpgradedSpikes)
                             {
-                                connection.AddPlayerItem(Item.ULTIMATE_SPECIAL_WALL_ID, connectionId, groupName);
+                                if (player.inventory.CanAddItem())
+                                {
+                                    connection.AddPlayerItem(Item.UPGRADED_SPIKES_ID, connectionId, groupName);
+                                }
                             }
-                        }
-                        else
-                        {
-                        }
-                        break;
-                    case Item.DESTROYER_ID:
-                        if (player.inventory.CanAddItem())
-                        {
-                            connection.AddPlayerItem(Item.DESTROYER_ID, connectionId, groupName);
-                        }
-                        break;
-                    case SPIKES_ID:
-                        if (element is DefaultSpikes)
-                        {
-                            if (player.inventory.CanAddItem())
+                            else if (element is UltimateSpikes)
                             {
-                                connection.AddPlayerItem(Item.DEFAULT_SPIKES_ID, connectionId, groupName);
+                                if (player.inventory.CanAddItem())
+                                {
+                                    connection.AddPlayerItem(Item.ULTIMATE_SPIKES_ID, connectionId, groupName);
+                                }
                             }
-                        }
-                        else if (element is UpgradedSpikes)
-                        {
-                            if (player.inventory.CanAddItem())
+                            else
                             {
-                                connection.AddPlayerItem(Item.UPGRADED_SPIKES_ID, connectionId, groupName);
                             }
-                        }
-                        else if (element is UltimateSpikes)
-                        {
-                            if (player.inventory.CanAddItem())
-                            {
-                                connection.AddPlayerItem(Item.ULTIMATE_SPIKES_ID, connectionId, groupName);
-                            }
-                        }
-                        else
-                        {
-                        }
-                        break;
+                            break;
+                    }
+                }
+                else
+                {
+                    UseItem(element as Item);
                 }
             }
             //UpdateGame();
@@ -669,6 +783,60 @@ namespace ProjectClient
 
             UpdatePlayersPosMap();
             Draw();
+        }
+
+        private void UsePlayerItem()
+        {
+            int itemId = (player1 as Player).inventory.GetItem(0);
+            if (itemId != -1)
+            {
+                if (MapMatrix[player1.X, player1.Y + 1] == SPACE_ID)
+                {
+                    connection.PlaceItem(player1.X, player1.Y + 1, itemId, connectionId, groupName);
+                    return;
+                }
+                if (MapMatrix[player1.X + 1, player1.Y + 1] == SPACE_ID)
+                {
+                    connection.PlaceItem(player1.X + 1, player1.Y + 1, itemId, connectionId, groupName);
+                    return;
+                }
+
+                if (MapMatrix[player1.X + 1, player1.Y] == SPACE_ID)
+                {
+                    connection.PlaceItem(player1.X + 1, player1.Y, itemId, connectionId, groupName);
+                    return;
+                }
+
+                if (MapMatrix[player1.X + 1, player1.Y - 1] == SPACE_ID)
+                {
+                    connection.PlaceItem(player1.X + 1, player1.Y - 1, itemId, connectionId, groupName);
+                    return;
+                }
+
+                if (MapMatrix[player1.X, player1.Y - 1] == SPACE_ID)
+                {
+                    connection.PlaceItem(player1.X, player1.Y - 1, itemId, connectionId, groupName);
+                    return;
+                }
+
+                if (MapMatrix[player1.X - 1, player1.Y - 1] == SPACE_ID)
+                {
+                    connection.PlaceItem(player1.X - 1, player1.Y - 1, itemId, connectionId, groupName);
+                    return;
+                }
+
+                if (MapMatrix[player1.X - 1, player1.Y] == SPACE_ID)
+                {
+                    connection.PlaceItem(player1.X - 1, player1.Y, itemId, connectionId, groupName);
+                    return;
+                }
+
+                if (MapMatrix[player1.X - 1, player1.Y + 1] == SPACE_ID)
+                {
+                    connection.PlaceItem(player1.X - 1, player1.Y + 1, itemId, connectionId, groupName);
+                    return;
+                }
+            }
         }
 
         private void SetMap(int X, int Y, int id)
@@ -755,42 +923,84 @@ namespace ProjectClient
                     switch (blockId)
                     {
                         case PLAYER1_INV1_ID:
-                            itemId = (player1 as Player).inventory.GetItem(0);
+                            if (MainPlayer)
+                            {
+                                itemId = (player1 as Player).inventory.GetItem(0);
+                            }
+                            else
+                            {
+                                itemId = (player2 as Player).inventory.GetItem(0);
+                            }
                             if (itemId != -1)
                             {
                                 DrawItem(itemId, i, j);
                             }
                             break;
                         case PLAYER1_INV2_ID:
-                            itemId = (player1 as Player).inventory.GetItem(1);
+                            if (MainPlayer)
+                            {
+                                itemId = (player1 as Player).inventory.GetItem(1);
+                            }
+                            else
+                            {
+                                itemId = (player2 as Player).inventory.GetItem(1);
+                            }
                             if (itemId != -1)
                             {
                                 DrawItem(itemId, i, j);
                             }
                             break;
                         case PLAYER1_INV3_ID:
-                            itemId = (player1 as Player).inventory.GetItem(2);
+                            if (MainPlayer)
+                            {
+                                itemId = (player1 as Player).inventory.GetItem(2);
+                            }
+                            else
+                            {
+                                itemId = (player2 as Player).inventory.GetItem(2);
+                            }
                             if (itemId != -1)
                             {
                                 DrawItem(itemId, i, j);
                             }
                             break;
                         case PLAYER2_INV1_ID:
-                            itemId = (player2 as Player).inventory.GetItem(0);
+                            if (MainPlayer)
+                            {
+                                itemId = (player2 as Player).inventory.GetItem(0);
+                            }
+                            else
+                            {
+                                itemId = (player1 as Player).inventory.GetItem(0);
+                            }
                             if (itemId != -1)
                             {
                                 DrawItem(itemId, i, j);
                             }
                             break;
                         case PLAYER2_INV2_ID:
-                            itemId = (player2 as Player).inventory.GetItem(1);
+                            if (MainPlayer)
+                            {
+                                itemId = (player2 as Player).inventory.GetItem(1);
+                            }
+                            else
+                            {
+                                itemId = (player1 as Player).inventory.GetItem(1);
+                            }
                             if (itemId != -1)
                             {
                                 DrawItem(itemId, i, j);
                             }
                             break;
                         case PLAYER2_INV3_ID:
-                            itemId = (player2 as Player).inventory.GetItem(2);
+                            if (MainPlayer)
+                            {
+                                itemId = (player2 as Player).inventory.GetItem(2);
+                            }
+                            else
+                            {
+                                itemId = (player1 as Player).inventory.GetItem(2);
+                            }
                             if (itemId != -1)
                             {
                                 DrawItem(itemId, i, j);
@@ -857,16 +1067,16 @@ namespace ProjectClient
         {
             Rectangle rectangle = new Rectangle();
             PointF[] triangle = new PointF[3];
-            
-                rectangle = new Rectangle(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-            
-                PointF point1 = new PointF(i * BLOCK_SIZE, (j + 1) * BLOCK_SIZE);
-                PointF point2 = new PointF((i * BLOCK_SIZE) + (BLOCK_SIZE / 2), (j * BLOCK_SIZE));
-                PointF point3 = new PointF((i * BLOCK_SIZE) + BLOCK_SIZE, (j + 1) * BLOCK_SIZE);
-                triangle[0] = point1;
-                triangle[1] = point2;
-                triangle[2] = point3;
-            
+
+            rectangle = new Rectangle(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+
+            PointF point1 = new PointF(i * BLOCK_SIZE, (j + 1) * BLOCK_SIZE);
+            PointF point2 = new PointF((i * BLOCK_SIZE) + (BLOCK_SIZE / 2), (j * BLOCK_SIZE));
+            PointF point3 = new PointF((i * BLOCK_SIZE) + BLOCK_SIZE, (j + 1) * BLOCK_SIZE);
+            triangle[0] = point1;
+            triangle[1] = point2;
+            triangle[2] = point3;
+
             switch (itemId)
             {
                 case Item.DEFAULT_SPECIAL_WALL_ID:
@@ -899,6 +1109,10 @@ namespace ProjectClient
         {
             if (MainPlayer)
             {
+                if (e.KeyChar.Equals(' '))
+                {
+                    UsePlayerItem();
+                }
                 if (e.KeyChar.Equals('w'))
                 {
                     UpdatePlayerPosition(UP);
@@ -918,6 +1132,10 @@ namespace ProjectClient
             }
             else
             {
+                if (e.KeyChar.Equals(' '))
+                {
+                    UsePlayerItem();
+                }
                 if (e.KeyChar.Equals('w'))
                 {
                     UpdatePlayerPosition(UP);

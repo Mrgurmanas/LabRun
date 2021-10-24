@@ -87,6 +87,11 @@ namespace ProjectClient.Class
             connection.InvokeCoreAsync("SpawnSpecialItem", args: new[] { x.ToString(), y.ToString(), id.ToString(), groupName });
         }
 
+        public void PlaceItem(int x, int y, int itemId, string connectionId, string groupName)
+        {
+            connection.InvokeCoreAsync("PlaceItem", args: new[] { x.ToString(), y.ToString(), itemId.ToString(), connectionId, groupName });
+        }
+
         public void AddPlayerItem(int itemId, string connectionId, string groupName)
         {
             connection.InvokeCoreAsync("AddPlayerItem", args: new[] { itemId.ToString(), connectionId, groupName });
@@ -110,6 +115,11 @@ namespace ProjectClient.Class
             connection.On("AddPlayerPoints", (int points, string connectionId) =>
             {
                 gameMap.AddPlayerPointsByServer(points, connectionId);
+            });
+
+            connection.On("PlaceItem", (int X, int Y, int itemId, string connectionId) =>
+            {
+                gameMap.PlaceItemByServer(X, Y, itemId, connectionId);
             });
 
             connection.On("SpawnSpecialItem", (int X, int Y, int id) =>

@@ -120,6 +120,14 @@ namespace ProjectServer
             return Clients.Group(groupName).SendAsync("AddPlayerPoints", pointsInt, connectionId);
         }
 
+        public Task PlaceItem(string X, string Y, string itemId, string connectionId, string groupName)
+        {
+            int x = int.Parse(X);
+            int y = int.Parse(Y);
+            int id = int.Parse(itemId);
+            return Clients.Group(groupName).SendAsync("PlaceItem", x, y, id, connectionId);
+        }
+
         public Task SpawnSpecialItem(string X, string Y, string ID,  string groupName)
         {
             int x = int.Parse(X);
