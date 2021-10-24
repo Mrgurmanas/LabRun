@@ -608,8 +608,16 @@ namespace ProjectClient
 
             // Draw string to screen.
             g.DrawString(coinsLeft, drawFont, drawBrush, ((MAP_MAX_SIZE / 2) - 1) * BLOCK_SIZE, MAP_MAX_SIZE / 2 * BLOCK_SIZE, drawFormat);
-            g.DrawString(player2Score, drawFont, drawBrush, (MAP_MAX_SIZE - 3) * BLOCK_SIZE, ((MAP_MAX_SIZE / 2) - 3) * BLOCK_SIZE, drawFormat);
-            g.DrawString(player1Score, drawFont, drawBrush, (MAP_MIN_SIZE + 1) * BLOCK_SIZE, ((MAP_MAX_SIZE / 2) - 3) * BLOCK_SIZE, drawFormat);
+            if (MainPlayer)
+            {
+                g.DrawString(player2Score, drawFont, drawBrush, (MAP_MAX_SIZE - 3) * BLOCK_SIZE, ((MAP_MAX_SIZE / 2) - 3) * BLOCK_SIZE, drawFormat);
+                g.DrawString(player1Score, drawFont, drawBrush, (MAP_MIN_SIZE + 1) * BLOCK_SIZE, ((MAP_MAX_SIZE / 2) - 3) * BLOCK_SIZE, drawFormat);
+            }
+            else
+            {
+                g.DrawString(player1Score, drawFont, drawBrush, (MAP_MAX_SIZE - 3) * BLOCK_SIZE, ((MAP_MAX_SIZE / 2) - 3) * BLOCK_SIZE, drawFormat);
+                g.DrawString(player2Score, drawFont, drawBrush, (MAP_MIN_SIZE + 1) * BLOCK_SIZE, ((MAP_MAX_SIZE / 2) - 3) * BLOCK_SIZE, drawFormat);
+            }
 
             Rectangle rectangle = new Rectangle();
             PointF[] triangle = new PointF[3];
@@ -618,8 +626,18 @@ namespace ProjectClient
             {
                 for (int j = 0; j < 21; j++)
                 {
-                    int blockId = MapMatrix[i, j];
-                    GraphicalElement element = ObjectMatrix[i, j];
+                    int blockId;
+                    GraphicalElement element;
+                    if (MainPlayer)
+                    {
+                        blockId = MapMatrix[i, j];
+                        element = ObjectMatrix[i, j];
+                    }
+                    else
+                    {
+                        blockId = MapMatrix[MAP_MAX_SIZE - i, j];
+                        element = ObjectMatrix[MAP_MAX_SIZE - i, j];
+                    }
 
                     if (blockId != SPIKES_ID)
                     {
@@ -696,21 +714,43 @@ namespace ProjectClient
 
         private void KeyIsPressed(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar.Equals('w'))
+            if (MainPlayer)
             {
-                UpdatePlayerPosition(UP);
+                if (e.KeyChar.Equals('w'))
+                {
+                    UpdatePlayerPosition(UP);
+                }
+                if (e.KeyChar.Equals('s'))
+                {
+                    UpdatePlayerPosition(DOWN);
+                }
+                if (e.KeyChar.Equals('a'))
+                {
+                    UpdatePlayerPosition(LEFT);
+                }
+                if (e.KeyChar.Equals('d'))
+                {
+                    UpdatePlayerPosition(RIGHT);
+                }
             }
-            if (e.KeyChar.Equals('s'))
+            else
             {
-                UpdatePlayerPosition(DOWN);
-            }
-            if (e.KeyChar.Equals('a'))
-            {
-                UpdatePlayerPosition(LEFT);
-            }
-            if (e.KeyChar.Equals('d'))
-            {
-                UpdatePlayerPosition(RIGHT);
+                if (e.KeyChar.Equals('w'))
+                {
+                    UpdatePlayerPosition(UP);
+                }
+                if (e.KeyChar.Equals('s'))
+                {
+                    UpdatePlayerPosition(DOWN);
+                }
+                if (e.KeyChar.Equals('a'))
+                {
+                    UpdatePlayerPosition(RIGHT);
+                }
+                if (e.KeyChar.Equals('d'))
+                {
+                    UpdatePlayerPosition(LEFT);
+                }
             }
         }
 
