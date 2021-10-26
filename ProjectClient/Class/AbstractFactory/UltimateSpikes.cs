@@ -6,6 +6,6 @@ namespace ProjectClient.Class.AbstractFactory
 {
     class UltimateSpikes : Spikes
     {
-        public override int Value => 100;
+        public override int Value => 200;
     }
 }

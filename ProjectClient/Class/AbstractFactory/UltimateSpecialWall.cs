@@ -6,5 +6,6 @@ namespace ProjectClient.Class.AbstractFactory
 {
     class UltimateSpecialWall : SpecialWall
     {
+        public override int Value => 100;
     }
 }

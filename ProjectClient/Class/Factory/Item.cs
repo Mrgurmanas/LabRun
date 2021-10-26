@@ -22,10 +22,11 @@ namespace ProjectClient.Class.Factory
         public const int ULTIMATE_SPIKES_ID = 2000;
         public const int COIN_ID = 3;
         public const int DESTROYER_ID = 40;
+        public const int STATE_DESTROYED = -100;
 
         public int State { get; set; }
         public bool Visibility { get; set; }
-        public string PlayerConnection { get; set; } = null;
+        public string PlayerConnection { get; set; } = "";
 
         public Subject subject;
 
@@ -85,9 +86,9 @@ namespace ProjectClient.Class.Factory
             return -1;
         }
 
-        public void ItemActivated()
+        public void ItemActivated(Player player)
         {
-            itemActivatedAlgorithm.ItemActivated();
+            itemActivatedAlgorithm.ItemActivated(player, this);
         }
 
         public void UseItem()
@@ -111,7 +112,7 @@ namespace ProjectClient.Class.Factory
 
         public void Update()
         {
-            //TODO: what to do when observer send message 
+            State = STATE_DESTROYED;
         }
     }
 }

@@ -8,5 +8,6 @@ namespace ProjectClient.Class.Factory
     {
         public int Color { get; set; }
         public Inventory inventory = new Inventory();
+        public string ConnectionId { get; set; } = "";
     }
 }

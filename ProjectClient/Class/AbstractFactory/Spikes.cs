@@ -7,6 +7,6 @@ namespace ProjectClient.Class.AbstractFactory
 {
     abstract class Spikes : Item
     {
-       public abstract int Value { get; }
+        public abstract int Value { get; }
     }
 }

@@ -7,5 +7,6 @@ namespace ProjectClient.Class.AbstractFactory
 {
     abstract class SpecialWall : Item
     {
+        public abstract int Value { get; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjectClient.Class.Factory;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,6 +12,7 @@ namespace ProjectClient.Class
         private int Player1Score { get; set; }
         private int Player2Score { get; set; }
         private int CurrentCoin { get; set; }
+        private GameMap gm;
         public const int MAX_COIN_COUNT = 20;
 
         private static class SingletonHolder
@@ -32,6 +34,16 @@ namespace ProjectClient.Class
             return SingletonHolder.instance;
         }
 
+        public void SetGameMap(GameMap gm)
+        {
+            this.gm = gm;
+        }
+
+        public GameMap GetGameMap()
+        {
+            return gm;
+        }
+
         public void UpdateCurrentCoin()
         {
             if(CurrentCoin < MAX_COIN_COUNT)
@@ -49,9 +61,9 @@ namespace ProjectClient.Class
         {
             switch (playerId)
             {
-                case 1:
+                case GameMap.PLAYER_1_ID:
                     return Player1Score;
-                case 2:
+                case GameMap.PLAYER_2_ID:
                     return Player2Score;
                 default:
                     return -1;
@@ -100,18 +112,4 @@ namespace ProjectClient.Class
         }
 
     }
-
-    /*
-    public class Singleton
-    {
-        private static class SingletonHolder
-        {
-            public static Singleton instance = new Singleton();
-        }
-
-        public static Singleton getInstance()
-        {
-            return SingletonHolder.instance;
-        }
-    }*/
 }

@@ -36,8 +36,8 @@ namespace ProjectClient
         private const int DOWN = 2;
 
         private const int GROUP_SIZE = 2;
-        private const int PLAYER_1_ID = 1;
-        private const int PLAYER_2_ID = 2;
+        public const int PLAYER_1_ID = 1;
+        public const int PLAYER_2_ID = 2;
 
         private int MapLength = 1000;
         private int MapWidth = 1000;
@@ -124,17 +124,14 @@ namespace ProjectClient
 
             //Singleton Inner class approach
             gameRound = GameRound.getInstance();
+            gameRound.SetGameMap(this);
 
             //Observer
             subject = new Server();
 
-            //test
-            /*Item testCoin = new Coin();
-            subject.Attach(testCoin);
-            testCoin.UseItem();*/
-
             UpdateGame();
         }
+
 
         public int[,] Transpose(int[,] matrix)
         {
@@ -170,6 +167,9 @@ namespace ProjectClient
                     player2.X = 19;
                     player2.Y = 10;
 
+                    (player1 as Player).ConnectionId = groupPlayers[0];
+                    (player2 as Player).ConnectionId = groupPlayers[1];
+
                     ObjectMatrix[1, 10] = player1;
                     ObjectMatrix[19, 10] = player2;
                     break;
@@ -178,6 +178,9 @@ namespace ProjectClient
                     player1.Y = 10;
                     player2.X = 1;
                     player2.Y = 10;
+
+                    (player1 as Player).ConnectionId = groupPlayers[1];
+                    (player2 as Player).ConnectionId = groupPlayers[0];
 
                     ObjectMatrix[19, 10] = player1;
                     ObjectMatrix[1, 10] = player2;
@@ -229,14 +232,13 @@ namespace ProjectClient
             }
         }
 
-        private Item RandomSpawnItemToMap<T>(T item)
+        private int[] FindEmptySpace()
         {
-            //spawn item
             bool found = false;
-            int x, y;
             int blockId;
+            int x, y;
             Random rnd = new Random();
-            Item ourItem = item as Item;
+            int[] coords = new int[2];
 
             while (!found)
             {
@@ -245,82 +247,100 @@ namespace ProjectClient
                 blockId = MapMatrix[x, y];
                 if (blockId == SPACE_ID)
                 {
-                    found = true;
-
-                    ObjectMatrix[x, y] = item as Item;
-
-                    if (item is DefaultSpecialWall)
-                    {
-                        MapMatrix[x, y] = SPECIAL_WALL_ID;
-                        ourItem.X = x;
-                        ourItem.Y = y;
-
-                        return ourItem;
-                    }
-
-                    if (item is UpgradedSpecialWall)
-                    {
-                        MapMatrix[x, y] = SPECIAL_WALL_ID;
-                        ourItem.X = x;
-                        ourItem.Y = y;
-
-                        return ourItem;
-                    }
-
-                    if (item is UltimateSpecialWall)
-                    {
-                        MapMatrix[x, y] = SPECIAL_WALL_ID;
-                        ourItem.X = x;
-                        ourItem.Y = y;
-
-                        return ourItem;
-                    }
-
-                    if (item is DefaultSpikes)
-                    {
-                        MapMatrix[x, y] = SPIKES_ID;
-                        ourItem.X = x;
-                        ourItem.Y = y;
-
-                        return ourItem;
-                    }
-
-                    if (item is UpgradedSpikes)
-                    {
-                        MapMatrix[x, y] = SPIKES_ID;
-                        ourItem.X = x;
-                        ourItem.Y = y;
-
-                        return ourItem;
-                    }
-
-                    if (item is UltimateSpikes)
-                    {
-                        MapMatrix[x, y] = SPIKES_ID;
-                        ourItem.X = x;
-                        ourItem.Y = y;
-
-                        return ourItem;
-                    }
-
-                    if (item is Coin)
-                    {
-                        MapMatrix[x, y] = COIN_ID;
-                        ourItem.X = x;
-                        ourItem.Y = y;
-
-                        return ourItem;
-                    }
-
-                    if (item is Destroyer)
-                    {
-                        MapMatrix[x, y] = DESTROYER_ID;
-                        ourItem.X = x;
-                        ourItem.Y = y;
-
-                        return ourItem;
-                    }
+                    coords[0] = x;
+                    coords[1] = y;
+                    return coords;
                 }
+            }
+            return null;
+        }
+
+        private Item RandomSpawnItemToMap<T>(T item)
+        {
+            //spawn item
+            Item ourItem = item as Item;
+            int x, y;
+            int[] coords = FindEmptySpace();
+
+            if (coords != null)
+            {
+                x = coords[0];
+                y = coords[1];
+
+                ObjectMatrix[x, y] = item as Item;
+
+                if (item is DefaultSpecialWall)
+                {
+                    MapMatrix[x, y] = SPECIAL_WALL_ID;
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    return ourItem;
+                }
+
+                if (item is UpgradedSpecialWall)
+                {
+                    MapMatrix[x, y] = SPECIAL_WALL_ID;
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    return ourItem;
+                }
+
+                if (item is UltimateSpecialWall)
+                {
+                    MapMatrix[x, y] = SPECIAL_WALL_ID;
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    return ourItem;
+                }
+
+                if (item is DefaultSpikes)
+                {
+                    MapMatrix[x, y] = SPIKES_ID;
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    return ourItem;
+                }
+
+                if (item is UpgradedSpikes)
+                {
+                    MapMatrix[x, y] = SPIKES_ID;
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    return ourItem;
+                }
+
+                if (item is UltimateSpikes)
+                {
+                    MapMatrix[x, y] = SPIKES_ID;
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    return ourItem;
+                }
+
+                if (item is Coin)
+                {
+                    MapMatrix[x, y] = COIN_ID;
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    return ourItem;
+                }
+
+                if (item is Destroyer)
+                {
+                    MapMatrix[x, y] = DESTROYER_ID;
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    return ourItem;
+                }
+
             }
             //Draw();
             return null;
@@ -333,7 +353,7 @@ namespace ProjectClient
 
         public void AddPlayerItemByServer(int itemId, string connection)
         {
-            if(this.connectionId == connection)
+            if (this.connectionId == connection)
             {
                 (player1 as Player).inventory.AddItem(itemId);
             }
@@ -442,7 +462,7 @@ namespace ProjectClient
             AbstractFactory itemFactory = null;
             Item item = null;
 
-            if(this.connectionId != connectionId)
+            if (this.connectionId != connectionId)
             {
                 (player2 as Player).inventory.RemoveItem();
             }
@@ -530,7 +550,13 @@ namespace ProjectClient
         public void AddPlayerPointsByServer(int points, string connectionId)
         {
             int playerId = groupPlayers.IndexOf(connectionId) + 1;
-            gameRound.AddPoints(points, playerId);
+            if (points > 0)
+            {
+                gameRound.AddPoints(points, playerId);
+            }else if (points < 0)
+            {
+                gameRound.RemovePoints(points, playerId);
+            }
             UpdateGame();
         }
 
@@ -554,7 +580,7 @@ namespace ProjectClient
             AbstractFactory itemFactory = null;
 
             Random rnd = new Random();
-            switch (rnd.Next(1, 3))
+            switch (rnd.Next(1, 4))
             {
                 case 1:
                     itemFactory = new DefaultFactory();
@@ -569,12 +595,14 @@ namespace ProjectClient
 
             //randomizing special item
             rnd = new Random();
-            switch (rnd.Next(1, 2))
+            switch (rnd.Next(1, 4))
             {
                 case 1:
                     return itemFactory.createSpecialWall();
                 case 2:
                     return itemFactory.createSpikes();
+                case 3:
+                    return new Destroyer();
             }
             return null;
         }
@@ -632,25 +660,39 @@ namespace ProjectClient
             Draw();
         }
 
-        private void UseItem(Item item)
+        private void SteppedOnItem(Player player, Item item)
         {
             //Strategy
             //player
             if (item.PlayerConnection == connectionId)
             {
-                item.SetAlgorithm(new PlayerAlgorithm());
-                item.ItemActivated();
-                //test
-                //gameRound.AddPoints(1000, PLAYER_1_ID);
+                if (item is SpecialWall)
+                {
+                    item.SetAlgorithm(new PlayerSpecialWallAlgorithm());
+                }
+                else if (item is Spikes)
+                {
+                    item.SetAlgorithm(new PlayerSpikesAlgorithm());
+                }
             }
             else
             {
                 //enemy 
-                item.SetAlgorithm(new EnemyAlgorithm());
-                item.ItemActivated();
-                //test
-                //gameRound.AddPoints(2000, PLAYER_2_ID);
+                if (item is SpecialWall)
+                {
+                    item.SetAlgorithm(new EnemySpecialWallAlgorithm());
+                }
+                else if (item is Spikes)
+                {
+                    item.SetAlgorithm(new EnemySpikesAlgorithm());
+                }
             }
+            item.ItemActivated(player);
+        }
+
+        public void AddPlayerPoints(int value, string connectionId)
+        {
+            connection.AddPlayerPoints(value, connectionId, groupName);
         }
 
         private void CheckForItem(Player player, int x, int y)
@@ -659,7 +701,7 @@ namespace ProjectClient
             if (blockId != SPACE_ID)
             {
                 GraphicalElement element = ObjectMatrix[x, y];
-                if ((element as Item).PlayerConnection == null)
+                if ((element as Item).PlayerConnection == "")
                 {
                     switch (blockId)
                     {
@@ -670,7 +712,8 @@ namespace ProjectClient
                         case WALL_ID:
                             break;
                         case Item.COIN_ID:
-                            connection.AddPlayerPoints((element as Coin).Value, connectionId, groupName);
+                            AddPlayerPoints((element as Coin).Value, connectionId);
+                            ObjectMatrix[x, y] = null;
                             break;
                         case SPECIAL_WALL_ID:
                             if (element is DefaultSpecialWall)
@@ -679,6 +722,8 @@ namespace ProjectClient
                                 if (player.inventory.CanAddItem())
                                 {
                                     connection.AddPlayerItem(Item.DEFAULT_SPECIAL_WALL_ID, connectionId, groupName);
+                                    subject.Deattach(element as Item);
+                                    ObjectMatrix[x, y] = null;
                                 }
                             }
                             else if (element is UpgradedSpecialWall)
@@ -686,6 +731,8 @@ namespace ProjectClient
                                 if (player.inventory.CanAddItem())
                                 {
                                     connection.AddPlayerItem(Item.UPGRADED_SPECIAL_WALL_ID, connectionId, groupName);
+                                    subject.Deattach(element as Item);
+                                    ObjectMatrix[x, y] = null;
                                 }
                             }
                             else if (element is UltimateSpecialWall)
@@ -693,6 +740,8 @@ namespace ProjectClient
                                 if (player.inventory.CanAddItem())
                                 {
                                     connection.AddPlayerItem(Item.ULTIMATE_SPECIAL_WALL_ID, connectionId, groupName);
+                                    subject.Deattach(element as Item);
+                                    ObjectMatrix[x, y] = null;
                                 }
                             }
                             else
@@ -703,6 +752,8 @@ namespace ProjectClient
                             if (player.inventory.CanAddItem())
                             {
                                 connection.AddPlayerItem(Item.DESTROYER_ID, connectionId, groupName);
+                                subject.Deattach(element as Item);
+                                ObjectMatrix[x, y] = null;
                             }
                             break;
                         case SPIKES_ID:
@@ -711,6 +762,8 @@ namespace ProjectClient
                                 if (player.inventory.CanAddItem())
                                 {
                                     connection.AddPlayerItem(Item.DEFAULT_SPIKES_ID, connectionId, groupName);
+                                    subject.Deattach(element as Item);
+                                    ObjectMatrix[x, y] = null;
                                 }
                             }
                             else if (element is UpgradedSpikes)
@@ -718,6 +771,8 @@ namespace ProjectClient
                                 if (player.inventory.CanAddItem())
                                 {
                                     connection.AddPlayerItem(Item.UPGRADED_SPIKES_ID, connectionId, groupName);
+                                    subject.Deattach(element as Item);
+                                    ObjectMatrix[x, y] = null;
                                 }
                             }
                             else if (element is UltimateSpikes)
@@ -725,6 +780,8 @@ namespace ProjectClient
                                 if (player.inventory.CanAddItem())
                                 {
                                     connection.AddPlayerItem(Item.ULTIMATE_SPIKES_ID, connectionId, groupName);
+                                    subject.Deattach(element as Item);
+                                    ObjectMatrix[x, y] = null;
                                 }
                             }
                             else
@@ -735,7 +792,7 @@ namespace ProjectClient
                 }
                 else
                 {
-                    UseItem(element as Item);
+                    SteppedOnItem(player, element as Item);
                 }
             }
             //UpdateGame();
@@ -788,7 +845,7 @@ namespace ProjectClient
         private void UsePlayerItem()
         {
             int itemId = (player1 as Player).inventory.GetItem(0);
-            if (itemId != -1)
+            if (itemId != -1 && itemId != DESTROYER_ID)
             {
                 if (MapMatrix[player1.X, player1.Y + 1] == SPACE_ID)
                 {
@@ -836,6 +893,15 @@ namespace ProjectClient
                     connection.PlaceItem(player1.X - 1, player1.Y + 1, itemId, connectionId, groupName);
                     return;
                 }
+            }
+            else if (itemId == DESTROYER_ID)
+            {
+                (player1 as Player).inventory.RemoveItem();
+                //Observer
+                Item destroyer = new Destroyer();
+                subject.Attach(destroyer);
+                destroyer.UseItem();
+                Draw();
             }
         }
 
@@ -1016,9 +1082,21 @@ namespace ProjectClient
                             g.FillRectangle(Brushes.Blue, rectangle);
                             break;
                         case COIN_ID:
+                            if((element as Item).State == Item.STATE_DESTROYED)
+                            {
+                                MapMatrix[i, j] = SPACE_ID;
+                                ObjectMatrix[i, j] = null;
+                                break;
+                            }
                             g.FillEllipse(Brushes.Yellow, rectangle);
                             break;
                         case SPECIAL_WALL_ID:
+                            if ((element as Item).State == Item.STATE_DESTROYED)
+                            {
+                                MapMatrix[i, j] = SPACE_ID;
+                                ObjectMatrix[i, j] = null;
+                                break;
+                            }
                             if (element is DefaultSpecialWall)
                             {
                                 g.FillRectangle(Brushes.DeepSkyBlue, rectangle);
@@ -1029,7 +1107,7 @@ namespace ProjectClient
                             }
                             else if (element is UltimateSpecialWall)
                             {
-                                g.FillRectangle(Brushes.DarkMagenta, rectangle);
+                                g.FillRectangle(Brushes.BlueViolet, rectangle);
                             }
                             else
                             {
@@ -1037,10 +1115,22 @@ namespace ProjectClient
                             }
                             break;
                         case DESTROYER_ID:
+                            if ((element as Item).State == Item.STATE_DESTROYED)
+                            {
+                                MapMatrix[i, j] = SPACE_ID;
+                                ObjectMatrix[i, j] = null;
+                                break;
+                            }
                             //g.DrawRectangle(new Pen(Brushes.DarkMagenta, 3), rectangle);
                             g.FillRectangle(Brushes.DarkMagenta, rectangle);
                             break;
                         case SPIKES_ID:
+                            if ((element as Item).State == Item.STATE_DESTROYED)
+                            {
+                                MapMatrix[i, j] = SPACE_ID;
+                                ObjectMatrix[i, j] = null;
+                                break;
+                            }
                             if (element is DefaultSpikes)
                             {
                                 g.FillPolygon(Brushes.DeepSkyBlue, triangle);
@@ -1051,7 +1141,7 @@ namespace ProjectClient
                             }
                             else if (element is UltimateSpikes)
                             {
-                                g.FillPolygon(Brushes.DarkMagenta, triangle);
+                                g.FillPolygon(Brushes.BlueViolet, triangle);
                             }
                             else
                             {
