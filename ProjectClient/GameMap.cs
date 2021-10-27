@@ -16,9 +16,9 @@ namespace ProjectClient
 {
     public partial class GameMap : Form
     {
-        Connection connection;
+        public Connection connection;
         private string connectionId;
-        private string groupName;
+        public string groupName;
 
         private Graphics g;
         private const int BLOCK_SIZE = 45;
@@ -267,11 +267,11 @@ namespace ProjectClient
                 x = coords[0];
                 y = coords[1];
 
-                ObjectMatrix[x, y] = item as Item;
+                // ObjectMatrix[x, y] = item as Item;
 
                 if (item is DefaultSpecialWall)
                 {
-                    MapMatrix[x, y] = SPECIAL_WALL_ID;
+                    //  MapMatrix[x, y] = SPECIAL_WALL_ID;
                     ourItem.X = x;
                     ourItem.Y = y;
 
@@ -280,7 +280,7 @@ namespace ProjectClient
 
                 if (item is UpgradedSpecialWall)
                 {
-                    MapMatrix[x, y] = SPECIAL_WALL_ID;
+                    //  MapMatrix[x, y] = SPECIAL_WALL_ID;
                     ourItem.X = x;
                     ourItem.Y = y;
 
@@ -289,7 +289,7 @@ namespace ProjectClient
 
                 if (item is UltimateSpecialWall)
                 {
-                    MapMatrix[x, y] = SPECIAL_WALL_ID;
+                    //  MapMatrix[x, y] = SPECIAL_WALL_ID;
                     ourItem.X = x;
                     ourItem.Y = y;
 
@@ -298,7 +298,7 @@ namespace ProjectClient
 
                 if (item is DefaultSpikes)
                 {
-                    MapMatrix[x, y] = SPIKES_ID;
+                    //  MapMatrix[x, y] = SPIKES_ID;
                     ourItem.X = x;
                     ourItem.Y = y;
 
@@ -307,7 +307,7 @@ namespace ProjectClient
 
                 if (item is UpgradedSpikes)
                 {
-                    MapMatrix[x, y] = SPIKES_ID;
+                    //   MapMatrix[x, y] = SPIKES_ID;
                     ourItem.X = x;
                     ourItem.Y = y;
 
@@ -316,7 +316,7 @@ namespace ProjectClient
 
                 if (item is UltimateSpikes)
                 {
-                    MapMatrix[x, y] = SPIKES_ID;
+                    //   MapMatrix[x, y] = SPIKES_ID;
                     ourItem.X = x;
                     ourItem.Y = y;
 
@@ -325,7 +325,7 @@ namespace ProjectClient
 
                 if (item is Coin)
                 {
-                    MapMatrix[x, y] = COIN_ID;
+                    //   MapMatrix[x, y] = COIN_ID;
                     ourItem.X = x;
                     ourItem.Y = y;
 
@@ -334,7 +334,7 @@ namespace ProjectClient
 
                 if (item is Destroyer)
                 {
-                    MapMatrix[x, y] = DESTROYER_ID;
+                    //   MapMatrix[x, y] = DESTROYER_ID;
                     ourItem.X = x;
                     ourItem.Y = y;
 
@@ -373,80 +373,93 @@ namespace ProjectClient
             Draw();
         }
 
-        public void SpawnSpecialItemByServer(int X, int Y, int itemId)
+        public void SpawnSpecialItemByServer(int X, int Y, int itemId, string playerConnection)
         {
-            if (!MainPlayer)
-            {
-                //Abstract Factory
-                AbstractFactory itemFactory = null;
-                Item item = null;
+            //if (!MainPlayer)
+            //{
+            //Abstract Factory
+            AbstractFactory itemFactory = null;
+            Item item = null;
 
-                switch (itemId)
-                {
-                    case Item.DEFAULT_SPECIAL_WALL_ID:
-                        itemFactory = new DefaultFactory();
-                        item = itemFactory.createSpecialWall();
-                        item.X = X;
-                        item.Y = Y;
-                        ObjectMatrix[X, Y] = item;
-                        MapMatrix[X, Y] = SPECIAL_WALL_ID;
-                        break;
-                    case Item.UPGRADED_SPECIAL_WALL_ID:
-                        itemFactory = new UpgradedFactory();
-                        item = itemFactory.createSpecialWall();
-                        item.X = X;
-                        item.Y = Y;
-                        ObjectMatrix[X, Y] = item;
-                        MapMatrix[X, Y] = SPECIAL_WALL_ID;
-                        break;
-                    case Item.ULTIMATE_SPECIAL_WALL_ID:
-                        itemFactory = new UltimateFactory();
-                        item = itemFactory.createSpecialWall();
-                        item.X = X;
-                        item.Y = Y;
-                        ObjectMatrix[X, Y] = item;
-                        MapMatrix[X, Y] = SPECIAL_WALL_ID;
-                        break;
-                    case Item.DEFAULT_SPIKES_ID:
-                        itemFactory = new DefaultFactory();
-                        item = itemFactory.createSpikes();
-                        item.X = X;
-                        item.Y = Y;
-                        ObjectMatrix[X, Y] = item;
-                        MapMatrix[X, Y] = SPIKES_ID;
-                        break;
-                    case Item.UPGRADED_SPIKES_ID:
-                        itemFactory = new UpgradedFactory();
-                        item = itemFactory.createSpikes();
-                        item.X = X;
-                        item.Y = Y;
-                        ObjectMatrix[X, Y] = item;
-                        MapMatrix[X, Y] = SPIKES_ID;
-                        break;
-                    case Item.ULTIMATE_SPIKES_ID:
-                        itemFactory = new UltimateFactory();
-                        item = itemFactory.createSpikes();
-                        item.X = X;
-                        item.Y = Y;
-                        ObjectMatrix[X, Y] = item;
-                        MapMatrix[X, Y] = SPIKES_ID;
-                        break;
-                    case Item.COIN_ID:
-                        item = new Coin();
-                        item.X = X;
-                        item.Y = Y;
-                        ObjectMatrix[X, Y] = item;
-                        MapMatrix[X, Y] = Item.COIN_ID;
-                        break;
-                    case Item.DESTROYER_ID:
-                        item = new Destroyer();
-                        item.X = X;
-                        item.Y = Y;
-                        ObjectMatrix[X, Y] = item;
-                        MapMatrix[X, Y] = Item.DESTROYER_ID;
-                        break;
-                }
+            switch (itemId)
+            {
+                case Item.DEFAULT_SPECIAL_WALL_ID:
+                    itemFactory = new DefaultFactory();
+                    item = itemFactory.createSpecialWall();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = playerConnection;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = SPECIAL_WALL_ID;
+                    break;
+                case Item.UPGRADED_SPECIAL_WALL_ID:
+                    itemFactory = new UpgradedFactory();
+                    item = itemFactory.createSpecialWall();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = playerConnection;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = SPECIAL_WALL_ID;
+                    break;
+                case Item.ULTIMATE_SPECIAL_WALL_ID:
+                    itemFactory = new UltimateFactory();
+                    item = itemFactory.createSpecialWall();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = playerConnection;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = SPECIAL_WALL_ID;
+                    break;
+                case Item.DEFAULT_SPIKES_ID:
+                    itemFactory = new DefaultFactory();
+                    item = itemFactory.createSpikes();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = playerConnection;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = SPIKES_ID;
+                    break;
+                case Item.UPGRADED_SPIKES_ID:
+                    itemFactory = new UpgradedFactory();
+                    item = itemFactory.createSpikes();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = playerConnection;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = SPIKES_ID;
+                    break;
+                case Item.ULTIMATE_SPIKES_ID:
+                    itemFactory = new UltimateFactory();
+                    item = itemFactory.createSpikes();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = playerConnection;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = SPIKES_ID;
+                    break;
+                case Item.COIN_ID:
+                    item = new Coin();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = playerConnection;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = Item.COIN_ID;
+                    break;
+                case Item.DESTROYER_ID:
+                    item = new Destroyer();
+                    item.X = X;
+                    item.Y = Y;
+                    item.PlayerConnection = playerConnection;
+                    ObjectMatrix[X, Y] = item;
+                    MapMatrix[X, Y] = Item.DESTROYER_ID;
+                    break;
+                case Item.STATE_DESTROYED:
+                    ObjectMatrix[X, Y] = null;
+                    MapMatrix[X, Y] = SPACE_ID;
+                    break;
             }
+            // }
+            Draw();
         }
 
         public void SpawnCoinByServer(int X, int Y)
@@ -479,6 +492,7 @@ namespace ProjectClient
                     item.X = X;
                     item.Y = Y;
                     item.PlayerConnection = connectionId;
+                    subject.Attach(item);
                     ObjectMatrix[X, Y] = item;
                     MapMatrix[X, Y] = SPECIAL_WALL_ID;
                     break;
@@ -488,6 +502,7 @@ namespace ProjectClient
                     item.X = X;
                     item.Y = Y;
                     item.PlayerConnection = connectionId;
+                    subject.Attach(item);
                     ObjectMatrix[X, Y] = item;
                     MapMatrix[X, Y] = SPECIAL_WALL_ID;
                     break;
@@ -497,6 +512,7 @@ namespace ProjectClient
                     item.X = X;
                     item.Y = Y;
                     item.PlayerConnection = connectionId;
+                    subject.Attach(item);
                     ObjectMatrix[X, Y] = item;
                     MapMatrix[X, Y] = SPECIAL_WALL_ID;
                     break;
@@ -506,6 +522,7 @@ namespace ProjectClient
                     item.X = X;
                     item.Y = Y;
                     item.PlayerConnection = connectionId;
+                    subject.Attach(item);
                     ObjectMatrix[X, Y] = item;
                     MapMatrix[X, Y] = SPIKES_ID;
                     break;
@@ -515,6 +532,7 @@ namespace ProjectClient
                     item.X = X;
                     item.Y = Y;
                     item.PlayerConnection = connectionId;
+                    subject.Attach(item);
                     ObjectMatrix[X, Y] = item;
                     MapMatrix[X, Y] = SPIKES_ID;
                     break;
@@ -524,6 +542,7 @@ namespace ProjectClient
                     item.X = X;
                     item.Y = Y;
                     item.PlayerConnection = connectionId;
+                    subject.Attach(item);
                     ObjectMatrix[X, Y] = item;
                     MapMatrix[X, Y] = SPIKES_ID;
                     break;
@@ -532,6 +551,7 @@ namespace ProjectClient
                     item.X = X;
                     item.Y = Y;
                     item.PlayerConnection = connectionId;
+                    subject.Attach(item);
                     ObjectMatrix[X, Y] = item;
                     MapMatrix[X, Y] = Item.COIN_ID;
                     break;
@@ -540,6 +560,7 @@ namespace ProjectClient
                     item.X = X;
                     item.Y = Y;
                     item.PlayerConnection = connectionId;
+                    subject.Attach(item);
                     ObjectMatrix[X, Y] = item;
                     MapMatrix[X, Y] = Item.DESTROYER_ID;
                     break;
@@ -553,7 +574,8 @@ namespace ProjectClient
             if (points > 0)
             {
                 gameRound.AddPoints(points, playerId);
-            }else if (points < 0)
+            }
+            else if (points < 0)
             {
                 gameRound.RemovePoints(points, playerId);
             }
@@ -607,6 +629,12 @@ namespace ProjectClient
             return null;
         }
 
+        /*public void AddToMap(GraphicalElement ge, int x, int y)
+        {
+            connection.SpawnSpecialItem(x, y, (ge as Item).GetSpecialItemId(), groupName);
+            //Draw();
+        }*/
+
         //game spawn logic
         private void UpdateGame()
         {
@@ -626,23 +654,41 @@ namespace ProjectClient
                             //end of game 
                             end = true;
                             break;
+                        case 3:
+                            //spawn coin and item
+                            item = RandomizeSpecialItem();
+                            item = RandomSpawnItemToMap(item);
+                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), item.PlayerConnection, groupName);
+                            break;
                         case 5:
                             //spawn coin and item
                             item = RandomizeSpecialItem();
                             item = RandomSpawnItemToMap(item);
-                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), groupName);
+                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), item.PlayerConnection, groupName);
+                            break;
+                        case 7:
+                            //spawn coin and item
+                            item = RandomizeSpecialItem();
+                            item = RandomSpawnItemToMap(item);
+                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), item.PlayerConnection, groupName);
                             break;
                         case 10:
                             //spawn coin and item
                             item = RandomizeSpecialItem();
                             item = RandomSpawnItemToMap(item);
-                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), groupName);
+                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), item.PlayerConnection, groupName);
+                            break;
+                        case 13:
+                            //spawn coin and item
+                            item = RandomizeSpecialItem();
+                            item = RandomSpawnItemToMap(item);
+                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), item.PlayerConnection, groupName);
                             break;
                         case 15:
                             //spawn coin and item
                             item = RandomizeSpecialItem();
                             item = RandomSpawnItemToMap(item);
-                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), groupName);
+                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), item.PlayerConnection, groupName);
                             break;
                         default:
                             break;
@@ -718,7 +764,6 @@ namespace ProjectClient
                         case SPECIAL_WALL_ID:
                             if (element is DefaultSpecialWall)
                             {
-
                                 if (player.inventory.CanAddItem())
                                 {
                                     connection.AddPlayerItem(Item.DEFAULT_SPECIAL_WALL_ID, connectionId, groupName);
@@ -795,44 +840,71 @@ namespace ProjectClient
                     SteppedOnItem(player, element as Item);
                 }
             }
-            //UpdateGame();
         }
 
         private void UpdatePlayerPosition(int pos)
         {
-            //need to fix if's to not let player step on wall
+            Player player = player1 as Player;
             switch (pos)
             {
                 case LEFT:
                     if (player1.X - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X - 1, player1.Y] != WALL_ID && MapMatrix[player1.X - 1, player1.Y] != PLAYER_ID))
                     {
-                        CheckForItem(player1 as Player, player1.X - 1, player1.Y);
-                        SetMap(player1.X, player1.Y, SPACE_ID);
-                        player1.X = player1.X - 1;
+                        CheckForItem(player, player1.X - 1, player1.Y);
+                        if (!player.Freezed)
+                        {
+                            SetMap(player1.X, player1.Y, SPACE_ID);
+                            player1.X = player1.X - 1;
+                        }
+                        else
+                        {
+                            player.Freezed = false;
+                        }
                     }
                     break;
                 case UP:
                     if (player1.Y - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X, player1.Y - 1] != WALL_ID && MapMatrix[player1.X, player1.Y - 1] != PLAYER_ID))
                     {
                         CheckForItem(player1 as Player, player1.X, player1.Y - 1);
-                        SetMap(player1.X, player1.Y, SPACE_ID);
-                        player1.Y = player1.Y - 1;
+                        if (!player.Freezed)
+                        {
+                            SetMap(player1.X, player1.Y, SPACE_ID);
+                            player1.Y = player1.Y - 1;
+                        }
+                        else
+                        {
+                            player.Freezed = false;
+                        }
                     }
                     break;
                 case RIGHT:
                     if (player1.X + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X + 1, player1.Y] != WALL_ID && MapMatrix[player1.X + 1, player1.Y] != PLAYER_ID))
                     {
                         CheckForItem(player1 as Player, player1.X + 1, player1.Y);
-                        SetMap(player1.X, player1.Y, SPACE_ID);
-                        player1.X = player1.X + 1;
+                        if (!player.Freezed)
+                        {
+                            SetMap(player1.X, player1.Y, SPACE_ID);
+                            player1.X = player1.X + 1;
+                        }
+                        else
+                        {
+                            player.Freezed = false;
+                        }
                     }
                     break;
                 case DOWN:
                     if (player1.Y + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X, player1.Y + 1] != WALL_ID && MapMatrix[player1.X, player1.Y + 1] != PLAYER_ID))
                     {
                         CheckForItem(player1 as Player, player1.X, player1.Y + 1);
-                        SetMap(player1.X, player1.Y, SPACE_ID);
-                        player1.Y = player1.Y + 1;
+                        if (!player.Freezed)
+                        {
+                            SetMap(player1.X, player1.Y, SPACE_ID);
+                            player1.Y = player1.Y + 1;
+                        }
+                        else
+                        {
+                            player.Freezed = false;
+                        }
                     }
                     break;
             }
@@ -896,12 +968,14 @@ namespace ProjectClient
             }
             else if (itemId == DESTROYER_ID)
             {
+                //update for another player aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
                 (player1 as Player).inventory.RemoveItem();
+
                 //Observer
                 Item destroyer = new Destroyer();
                 subject.Attach(destroyer);
                 destroyer.UseItem();
-                Draw();
+                UpdateMap();
             }
         }
 
@@ -918,6 +992,25 @@ namespace ProjectClient
 
             ObjectMatrix[player1.X, player1.Y] = player1;
             ObjectMatrix[player2.X, player2.Y] = player1;
+        }
+
+        private void UpdateMap()
+        {
+            GraphicalElement element;
+            for (int i = 0; i < 21; i++)
+            {
+                for (int j = 0; j < 21; j++)
+                {
+                    element = ObjectMatrix[i, j];
+                    if (element is Item)
+                    {
+                        if ((element as Item).State == Item.STATE_DESTROYED)
+                        {
+                            connection.SpawnSpecialItem(i, j, Item.STATE_DESTROYED, "", groupName);
+                        }
+                    }
+                }
+            }
         }
 
         private void Draw()
@@ -1082,21 +1175,17 @@ namespace ProjectClient
                             g.FillRectangle(Brushes.Blue, rectangle);
                             break;
                         case COIN_ID:
-                            if((element as Item).State == Item.STATE_DESTROYED)
-                            {
-                                MapMatrix[i, j] = SPACE_ID;
-                                ObjectMatrix[i, j] = null;
-                                break;
-                            }
+                            /* if((element as Item).State == Item.STATE_DESTROYED)
+                             {
+                                 connection.SpawnSpecialItem(i, j, Item.STATE_DESTROYED, groupName);
+                             }*/
                             g.FillEllipse(Brushes.Yellow, rectangle);
                             break;
                         case SPECIAL_WALL_ID:
-                            if ((element as Item).State == Item.STATE_DESTROYED)
-                            {
-                                MapMatrix[i, j] = SPACE_ID;
-                                ObjectMatrix[i, j] = null;
-                                break;
-                            }
+                            /* if((element as Item).State == Item.STATE_DESTROYED)
+                           {
+                               connection.SpawnSpecialItem(i, j, Item.STATE_DESTROYED, groupName);
+                           }*/
                             if (element is DefaultSpecialWall)
                             {
                                 g.FillRectangle(Brushes.DeepSkyBlue, rectangle);
@@ -1115,22 +1204,18 @@ namespace ProjectClient
                             }
                             break;
                         case DESTROYER_ID:
-                            if ((element as Item).State == Item.STATE_DESTROYED)
-                            {
-                                MapMatrix[i, j] = SPACE_ID;
-                                ObjectMatrix[i, j] = null;
-                                break;
-                            }
+                            /* if((element as Item).State == Item.STATE_DESTROYED)
+                           {
+                               connection.SpawnSpecialItem(i, j, Item.STATE_DESTROYED, groupName);
+                           }*/
                             //g.DrawRectangle(new Pen(Brushes.DarkMagenta, 3), rectangle);
                             g.FillRectangle(Brushes.DarkMagenta, rectangle);
                             break;
                         case SPIKES_ID:
-                            if ((element as Item).State == Item.STATE_DESTROYED)
-                            {
-                                MapMatrix[i, j] = SPACE_ID;
-                                ObjectMatrix[i, j] = null;
-                                break;
-                            }
+                            /* if((element as Item).State == Item.STATE_DESTROYED)
+                           {
+                               connection.SpawnSpecialItem(i, j, Item.STATE_DESTROYED, groupName);
+                           }*/
                             if (element is DefaultSpikes)
                             {
                                 g.FillPolygon(Brushes.DeepSkyBlue, triangle);

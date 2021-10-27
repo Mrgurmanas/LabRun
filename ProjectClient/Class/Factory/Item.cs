@@ -44,6 +44,11 @@ namespace ProjectClient.Class.Factory
 
         public int GetSpecialItemId()
         {
+            if(this.State == STATE_DESTROYED)
+            {
+                return STATE_DESTROYED;
+            }
+
             if (this is DefaultSpecialWall)
             {
                 return DEFAULT_SPECIAL_WALL_ID;

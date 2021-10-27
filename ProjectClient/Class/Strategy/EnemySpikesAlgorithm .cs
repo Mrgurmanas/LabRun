@@ -14,7 +14,7 @@ namespace ProjectClient.Class.Strategy
             GameMap gm = gr.GetGameMap();
             if (player.ConnectionId != item.PlayerConnection)
             {
-                gm.AddPlayerPoints((item as Spikes).Value, player.ConnectionId);
+                gm.AddPlayerPoints(-(item as Spikes).Value, player.ConnectionId);
             }
         }
     }

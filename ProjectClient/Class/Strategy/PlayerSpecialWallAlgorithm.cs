@@ -12,9 +12,11 @@ namespace ProjectClient.Class.Strategy
         {
             GameRound gr = GameRound.getInstance();
             GameMap gm = gr.GetGameMap();
-            if (player.ConnectionId == item.PlayerConnection)
-            {
-                gm.AddPlayerPoints(0, item.PlayerConnection);
+            if (player.ConnectionId == item.PlayerConnection) {
+                if (player.inventory.CanAddItem())
+                {
+                    gm.connection.AddPlayerItem(item.GetSpecialItemId(), player.ConnectionId, gm.groupName);
+                }
             }
         }
     }

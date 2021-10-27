@@ -6,6 +6,6 @@ namespace ProjectClient.Class.AbstractFactory
 {
     class UpgradedSpecialWall : SpecialWall
     {
-        public override int Value => 50;
+        public override int Value => 2;
     }
 }

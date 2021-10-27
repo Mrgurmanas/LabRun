@@ -128,12 +128,12 @@ namespace ProjectServer
             return Clients.Group(groupName).SendAsync("PlaceItem", x, y, id, connectionId);
         }
 
-        public Task SpawnSpecialItem(string X, string Y, string ID,  string groupName)
+        public Task SpawnSpecialItem(string X, string Y, string ID, string playerConnection,  string groupName)
         {
             int x = int.Parse(X);
             int y = int.Parse(Y);
             int id = int.Parse(ID);
-            return Clients.Group(groupName).SendAsync("SpawnSpecialItem", x, y, id);
+            return Clients.Group(groupName).SendAsync("SpawnSpecialItem", x, y, id, playerConnection);
         }
         
         public Task AddPlayerItem(string itemId, string connectionId, string groupName)
