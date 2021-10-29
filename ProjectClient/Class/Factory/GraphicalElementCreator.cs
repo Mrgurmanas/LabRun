@@ -18,8 +18,6 @@ namespace ProjectClient.Class.Factory
             {
                 case PLAYER_ID:
                     return new Player();
-                //case COIN:
-                //    return new Coin();
                 case ITEM_ID:
                     return new Item();
                 case WALL_ID:
