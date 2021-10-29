@@ -361,22 +361,24 @@ namespace ProjectClient
             {
                 (player2 as Player).inventory.AddItem(itemId);
             }
-            /*switch (groupPlayers.IndexOf(connectionId))
+            Draw();
+        }
+
+        public void RemovePlayerItemByServer(string connection)
+        {
+            if (this.connectionId == connection)
             {
-                case 0:
-                    (player1 as Player).inventory.AddItem(itemId);
-                    break;
-                case 1:
-                    (player2 as Player).inventory.AddItem(itemId);
-                    break;
-            }*/
+                (player1 as Player).inventory.RemoveItem();
+            }
+            else
+            {
+                (player2 as Player).inventory.RemoveItem();
+            }
             Draw();
         }
 
         public void SpawnSpecialItemByServer(int X, int Y, int itemId, string playerConnection)
         {
-            //if (!MainPlayer)
-            //{
             //Abstract Factory
             AbstractFactory itemFactory = null;
             Item item = null;
@@ -458,7 +460,6 @@ namespace ProjectClient
                     MapMatrix[X, Y] = SPACE_ID;
                     break;
             }
-            // }
             Draw();
         }
 
@@ -971,6 +972,7 @@ namespace ProjectClient
                 
                 //TODO: update for another player aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
                 (player1 as Player).inventory.RemoveItem();
+                connection.RemovePlayerItem(connectionId, groupName);
 
                 //Observer
                 Item destroyer = new Destroyer();

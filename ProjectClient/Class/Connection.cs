@@ -97,6 +97,11 @@ namespace ProjectClient.Class
             connection.InvokeCoreAsync("AddPlayerItem", args: new[] { itemId.ToString(), connectionId, groupName });
         }
 
+        public void RemovePlayerItem(string connectionId, string groupName)
+        {
+            connection.InvokeCoreAsync("RemovePlayerItem", args: new[] {connectionId, groupName });
+        }
+
         private void ServerResponseHandling()
         {
             connection.On("UpdatePlayers", (int X, int Y, string connectionId, string groupName) =>
@@ -130,6 +135,11 @@ namespace ProjectClient.Class
             connection.On("AddPlayerItem", (int itemId, string connectionId) =>
             {
                 gameMap.AddPlayerItemByServer(itemId, connectionId);
+            });
+
+            connection.On("RemovePlayerItem", (string connectionId) =>
+            {
+                gameMap.RemovePlayerItemByServer(connectionId);
             });
 
             connection.On("ReceiveMessage", (string userName, string message) =>
