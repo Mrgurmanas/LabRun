@@ -969,9 +969,6 @@ namespace ProjectClient
             }
             else if (itemId == DESTROYER_ID)
             {
-                
-                //TODO: update for another player aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                (player1 as Player).inventory.RemoveItem();
                 connection.RemovePlayerItem(connectionId, groupName);
 
                 //Observer
