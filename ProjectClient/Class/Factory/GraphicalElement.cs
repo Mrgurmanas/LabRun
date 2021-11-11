@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ProjectClient.Class.Factory
 {
-    abstract class GraphicalElement
+    public abstract class GraphicalElement
     {
         public int X { get; set; }
         public int Y { get; set; }

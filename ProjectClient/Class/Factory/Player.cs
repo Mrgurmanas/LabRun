@@ -4,11 +4,18 @@ using System.Text;
 
 namespace ProjectClient.Class.Factory
 {
-    class Player : GraphicalElement
+     class Player : GraphicalElement
     {
         public int Color { get; set; }
         public Inventory inventory = new Inventory();
         public bool Freezed = false;
         public string ConnectionId { get; set; } = "";
+
+
+        public void PutOnSkin()
+        {
+
+        }
+
     }
 }
