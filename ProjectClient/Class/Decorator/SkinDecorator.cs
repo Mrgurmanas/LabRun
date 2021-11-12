@@ -20,9 +20,11 @@ namespace ProjectClient.Class.Decorator
 
             playerToDecorate = player;
         }
-        public void PutOnSkin()
+        public  void PutOnSkin(PictureBox picture)
         {
-            playerToDecorate.PutOnSkin();
+            Console.WriteLine("bebebeebe");
+            _display = picture;
+            playerToDecorate.PutOnSkin(picture);
         }
         public virtual PictureBox Display
         {

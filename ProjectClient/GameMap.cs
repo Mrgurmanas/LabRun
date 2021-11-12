@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using ProjectClient.Class;
 using ProjectClient.Class.AbstractFactory;
+using ProjectClient.Class.Decorator;
 using ProjectClient.Class.Factory;
 using ProjectClient.Class.Observer;
 using ProjectClient.Class.Strategy;
@@ -26,6 +27,9 @@ namespace ProjectClient
         private List<string> groupPlayers;
         GraphicalElement player1;
         GraphicalElement player2;
+
+        Normal playerSkin;
+        Player opponentsSkin = new Player();
         private bool MainPlayer = false;
         GameRound gameRound;
         Subject subject;
@@ -90,15 +94,19 @@ namespace ProjectClient
 
         public GameMap(List<string> groupPlayers, string groupName, string connectionId, Connection connection)
         {
+            
             InitializeComponent();
             this.connection = connection;
             this.connectionId = connectionId;
             this.groupName = groupName;
             this.groupPlayers = groupPlayers;
 
+            
             g = canvas.CreateGraphics();
             MapMatrix = Transpose(DefaultMap);
             CreateObjectMatrix();
+
+            playerSkin = new Normal(player1 as Player, RIGHT);
 
             if (groupPlayers.Count == GROUP_SIZE)
             {
@@ -851,6 +859,10 @@ namespace ProjectClient
                 case LEFT:
                     if (player1.X - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X - 1, player1.Y] != WALL_ID && MapMatrix[player1.X - 1, player1.Y] != PLAYER_ID))
                     {
+                        playerSkin = new Normal(player, LEFT);
+
+                        //playerSkin = player;
+                        
                         CheckForItem(player, player1.X - 1, player1.Y);
                         if (!player.Freezed)
                         {
@@ -866,6 +878,7 @@ namespace ProjectClient
                 case UP:
                     if (player1.Y - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X, player1.Y - 1] != WALL_ID && MapMatrix[player1.X, player1.Y - 1] != PLAYER_ID))
                     {
+                        playerSkin = new Normal(player, UP);
                         CheckForItem(player1 as Player, player1.X, player1.Y - 1);
                         if (!player.Freezed)
                         {
@@ -881,6 +894,7 @@ namespace ProjectClient
                 case RIGHT:
                     if (player1.X + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X + 1, player1.Y] != WALL_ID && MapMatrix[player1.X + 1, player1.Y] != PLAYER_ID))
                     {
+                        playerSkin = new Normal(player, RIGHT);
                         CheckForItem(player1 as Player, player1.X + 1, player1.Y);
                         if (!player.Freezed)
                         {
@@ -896,6 +910,7 @@ namespace ProjectClient
                 case DOWN:
                     if (player1.Y + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X, player1.Y + 1] != WALL_ID && MapMatrix[player1.X, player1.Y + 1] != PLAYER_ID))
                     {
+                        playerSkin = new Normal(player, DOWN);
                         CheckForItem(player1 as Player, player1.X, player1.Y + 1);
                         if (!player.Freezed)
                         {
@@ -1170,6 +1185,8 @@ namespace ProjectClient
                             break;
                         case PLAYER_ID:
                             g.FillRectangle(Brushes.GreenYellow, rectangle);
+                            g.DrawImage(playerSkin.Display.Image, rectangle);
+                            
                             break;
                         case WALL_ID:
                             g.FillRectangle(Brushes.Blue, rectangle);
