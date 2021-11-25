@@ -3,6 +3,7 @@ using ProjectClient.Class;
 using ProjectClient.Class.AbstractFactory;
 using ProjectClient.Class.Factory;
 using ProjectClient.Class.Observer;
+using ProjectClient.Class.State;
 using ProjectClient.Class.Strategy;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,8 @@ namespace ProjectClient
         GraphicalElement player1;
         GraphicalElement player2;
         private bool MainPlayer = false;
-        GameRound gameRound;
+        GameLevel gameLevel;
+        GameRounds gameRounds;
         Subject subject;
 
         private const int LEFT = -1;
@@ -123,8 +125,9 @@ namespace ProjectClient
             }
 
             //Singleton Inner class approach
-            gameRound = GameRound.getInstance();
-            gameRound.SetGameMap(this);
+            gameLevel = GameLevel.getInstance();
+            gameLevel.SetGameMap(this);
+            gameRounds = new GameRounds();
 
             //Observer
             subject = new Server();
@@ -255,7 +258,104 @@ namespace ProjectClient
             return null;
         }
 
-        private Item RandomSpawnItemToMap<T>(T item)
+        public void RandomSpawnSpecialItem()
+        {
+            Item item = RandomizeSpecialItem();
+            RandomSpawnItem(item);
+        }
+
+        public void RandomSpawnItem<T>(T item)
+        {
+            //spawn item
+            Item ourItem = item as Item;
+            int x, y;
+            int[] coords = FindEmptySpace();
+
+            if (coords != null)
+            {
+                x = coords[0];
+                y = coords[1];
+
+
+                if (item is DefaultSpecialWall)
+                {
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    SpawnSpecialItemToServer(ourItem);
+                }
+
+                if (item is UpgradedSpecialWall)
+                {
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    SpawnSpecialItemToServer(ourItem);
+                }
+
+                if (item is UltimateSpecialWall)
+                {
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    SpawnSpecialItemToServer(ourItem);
+                }
+
+                if (item is DefaultSpikes)
+                {
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    SpawnSpecialItemToServer(ourItem);
+                }
+
+                if (item is UpgradedSpikes)
+                {
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    SpawnSpecialItemToServer(ourItem);
+                }
+
+                if (item is UltimateSpikes)
+                {
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    SpawnSpecialItemToServer(ourItem);
+                }
+
+                if (item is Coin)
+                {
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    SpawnSpecialItemToServer(ourItem);
+                }
+
+                if (item is Destroyer)
+                {
+                    ourItem.X = x;
+                    ourItem.Y = y;
+
+                    SpawnSpecialItemToServer(ourItem);
+                }
+            }
+        }
+
+        private void SpawnSpecialItemToServer(Item ourItem)
+        {
+            if (ourItem is Coin)
+            {
+                connection.SpawnCoin(ourItem.X, ourItem.Y, groupName);
+            }
+            else
+            {
+                connection.SpawnSpecialItem(ourItem.X, ourItem.Y, ourItem.GetSpecialItemId(), ourItem.PlayerConnection, groupName);
+            }
+        }
+
+        /*private Item RandomSpawnItemToMap<T>(T item)
         {
             //spawn item
             Item ourItem = item as Item;
@@ -344,7 +444,7 @@ namespace ProjectClient
             }
             //Draw();
             return null;
-        }
+        }*/
 
         //dont need 
         private void GameTimer(object sender, EventArgs e)
@@ -574,11 +674,11 @@ namespace ProjectClient
             int playerId = groupPlayers.IndexOf(connectionId) + 1;
             if (points > 0)
             {
-                gameRound.AddPoints(points, playerId);
+                gameLevel.AddPoints(points, playerId);
             }
             else if (points < 0)
             {
-                gameRound.RemovePoints(points, playerId);
+                gameLevel.RemovePoints(points, playerId);
             }
             UpdateGame();
         }
@@ -641,15 +741,18 @@ namespace ProjectClient
         {
             if (MainPlayer)
             {
-                int updatedRoundPoint = gameRound.GetCurrentCoin();
+                int updatedRoundPoint = gameLevel.GetCurrentCoin();
                 if (currentRoundPoint != updatedRoundPoint)
                 {
                     currentRoundPoint = updatedRoundPoint;
-                    Coin coin = null;
-                    Item item = null;
-                    bool end = false;
 
-                    switch (currentRoundPoint)
+                    gameRounds.SpawnItems();
+
+                    //Coin coin = null;
+                    //Item item = null;
+                    //bool end = false;
+
+                    /*switch (currentRoundPoint)
                     {
                         case -1:
                             //end of game 
@@ -701,7 +804,7 @@ namespace ProjectClient
                         coin = new Coin();
                         coin = RandomSpawnItemToMap(coin) as Coin;
                         connection.SpawnCoin(coin.X, coin.Y, groupName);
-                    }
+                    }*/
                 }
             }
             Draw();
@@ -1019,9 +1122,9 @@ namespace ProjectClient
             canvas.Refresh();
 
             // Create string to draw.
-            String coinsLeft = (GameRound.MAX_COIN_COUNT - gameRound.GetCurrentCoin()) + " coins";
-            String player1Score = gameRound.GetPlayerPoints(PLAYER_1_ID) + " points";
-            String player2Score = gameRound.GetPlayerPoints(PLAYER_2_ID) + " points";
+            string coinsLeft = (GameLevel.MAX_COIN_COUNT - gameLevel.GetCurrentCoin()) + " coins";
+            string player1Score = gameLevel.GetPlayerPoints(PLAYER_1_ID) + " points";
+            string player2Score = gameLevel.GetPlayerPoints(PLAYER_2_ID) + " points";
 
             // Create font and brush.
             Font drawFont = new Font("Arial", 16);

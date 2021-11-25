@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProjectClient.Class
 {
-     public class GameRound
+     public class GameLevel
     {
         //private static GameRound instance = null;
 
@@ -17,10 +17,10 @@ namespace ProjectClient.Class
 
         private static class SingletonHolder
         {
-            public static GameRound instance = new GameRound();
+            public static GameLevel instance = new GameLevel();
         }
 
-        private GameRound()
+        private GameLevel()
         {
             //singleton initialized
             this.Player1Score = 0;
@@ -28,7 +28,7 @@ namespace ProjectClient.Class
             CurrentCoin = 0;
         }
 
-        public static GameRound getInstance()
+        public static GameLevel getInstance()
         {
             //singleton initialized via holder
             return SingletonHolder.instance;

@@ -10,7 +10,7 @@ namespace ProjectClient.Class.Strategy
     {
         public override void ItemActivated(Player player, Item item)
         {
-            GameRound gr = GameRound.getInstance();
+            GameLevel gr = GameLevel.getInstance();
             GameMap gm = gr.GetGameMap();
             int x = item.X;
             int y = item.Y;
