@@ -26,7 +26,8 @@ namespace ProjectClient.Class.State
 
         public void SpawnItems()
         {
-            this._round.SpawnItems();
+            this._round.SetupRound();
+            //this._round.SpawnItems();
         }
     }
 }

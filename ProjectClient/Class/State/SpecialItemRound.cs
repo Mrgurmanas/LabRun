@@ -1,6 +1,7 @@
 ﻿using ProjectClient.Class.Factory;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 
 namespace ProjectClient.Class.State
@@ -30,6 +31,12 @@ namespace ProjectClient.Class.State
             {
                 _gameRounds.TransitionTo(casualRound);
             }
+        }
+
+        public override void UpdateDesign()
+        {
+            GameMap gameMap = _gameRounds.gameMap;
+            gameMap.SetTextColor(Color.Yellow);
         }
     }
 }

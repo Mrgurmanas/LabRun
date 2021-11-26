@@ -13,6 +13,13 @@ namespace ProjectClient.Class.State
             _gameRounds = gameRounds;
         }
 
-        public  abstract void SpawnItems();
+        public abstract void SpawnItems();
+        public abstract void UpdateDesign();
+
+        public void SetupRound()
+        {
+            SpawnItems();
+            UpdateDesign();
+        }
     }
 }

@@ -1087,6 +1087,13 @@ namespace ProjectClient
             MapMatrix[X, Y] = id;
         }
 
+        private Color mainTextColor;
+
+        public void SetTextColor(Color color)
+        {
+            mainTextColor = color;
+        }
+
         private void UpdatePlayersPosMap()
         {
             //update map from GraphicElements objects
@@ -1128,7 +1135,8 @@ namespace ProjectClient
 
             // Create font and brush.
             Font drawFont = new Font("Arial", 16);
-            SolidBrush drawBrush = new SolidBrush(Color.White);
+            SolidBrush drawBrush = new SolidBrush(mainTextColor);
+            //SolidBrush drawBrush = new SolidBrush(Color.White);
 
             // Set format of string.
             StringFormat drawFormat = new StringFormat();
