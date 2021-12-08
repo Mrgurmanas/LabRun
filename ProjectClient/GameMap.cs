@@ -1188,7 +1188,7 @@ namespace ProjectClient
                            }*/
                             if (element is DefaultSpecialWall)
                             {
-                                g.FillRectangle(Brushes.DeepSkyBlue, rectangle);
+                                g.FillRectangle(Brushes.DeepSkyBlue, rectangle, element.getColor());
                             }
                             else if (element is UpgradedSpecialWall)
                             {

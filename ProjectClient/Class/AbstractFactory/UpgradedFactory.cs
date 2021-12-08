@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ProjectClient.Class.Builderis;
+using System.Drawing;
 
 namespace ProjectClient.Class.AbstractFactory
 {
     class UpgradedFactory : AbstractFactory
     {
+        Rectangle rectangle;
         public override SpecialWall createSpecialWall()
         {
-            return new UpgradedSpecialWall();
+            SpecialWall wallUnit = new UpgradedSpecialWall();
+            Builder builder = new SpecialWallBuilder();
+            return builder.startNewSpecialWall(wallUnit).addVisuals(Brushes.DarkBlue).addShape(rectangle).getBuildableSpecialWall();
         }
 
         public override Spikes createSpikes()
         {
-            return new UpgradedSpikes();
+            Spikes spikeUnit = new UltimateSpikes();
+            Builder builder = new SpecialWallBuilder();
+            return builder.startNewSpikes(spikeUnit).addVisuals(Brushes.DarkBlue).getBuildableSpikes();
         }
     }
 }

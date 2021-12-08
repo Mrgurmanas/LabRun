@@ -7,5 +7,7 @@ namespace ProjectClient.Class.AbstractFactory
     class DefaultSpikes : Spikes
     {
         public override int Value => 10;
+
+ 
     }
 }

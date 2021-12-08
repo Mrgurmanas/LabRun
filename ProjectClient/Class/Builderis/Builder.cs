@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using ProjectClient.Class.AbstractFactory;
+using System.Drawing;
 
-namespace ProjectClient.Class.Builder
+namespace ProjectClient.Class.Builderis
 {
     abstract class Builder
     {
         public Spikes spikes;
         public SpecialWall specialWall;
+
+        public abstract Builder addVisuals(Brush color);
+        public abstract Builder addShape(Rectangle rectangle);
 
         public Builder startNewSpikes(Spikes newSpikes)
         {

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ProjectClient.Class.Factory
 {
-    class Item : GraphicalElement, IObserver
+    class Item : GraphicalElement, IObserver, ICloneable
     {
         /*private const int SPECIAL_WALL_ID = 1;
         private const int SPIKES_ID = 2;
@@ -119,5 +119,17 @@ namespace ProjectClient.Class.Factory
         {
             State = STATE_DESTROYED;
         }
+
+        public object Clone()
+        {
+            return (Item)this.MemberwiseClone();
+        }
+
+        //public object DeepClone()
+        //{
+        //    Item clone = (Item)this.MemberwiseClone();
+        //    clone.GetAlgorithm = new Get(Shield.type);
+        //    return clone;
+        //}
     }
 }
