@@ -14,8 +14,6 @@ namespace ProjectClient.Class.State
             //spawn coin
             Coin coin = new Coin();
             gameMap.RandomSpawnItem(coin);
-
-           // _gameRounds.TransitionTo(casualRound);
         }
 
         public override void UpdateDesign()

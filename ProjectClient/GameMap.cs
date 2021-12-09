@@ -747,64 +747,6 @@ namespace ProjectClient
                     currentRoundPoint = updatedRoundPoint;
 
                     gameRounds.SpawnItems();
-
-                    //Coin coin = null;
-                    //Item item = null;
-                    //bool end = false;
-
-                    /*switch (currentRoundPoint)
-                    {
-                        case -1:
-                            //end of game 
-                            end = true;
-                            break;
-                        case 3:
-                            //spawn coin and item
-                            item = RandomizeSpecialItem();
-                            item = RandomSpawnItemToMap(item);
-                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), item.PlayerConnection, groupName);
-                            break;
-                        case 5:
-                            //spawn coin and item
-                            item = RandomizeSpecialItem();
-                            item = RandomSpawnItemToMap(item);
-                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), item.PlayerConnection, groupName);
-                            break;
-                        case 7:
-                            //spawn coin and item
-                            item = RandomizeSpecialItem();
-                            item = RandomSpawnItemToMap(item);
-                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), item.PlayerConnection, groupName);
-                            break;
-                        case 10:
-                            //spawn coin and item
-                            item = RandomizeSpecialItem();
-                            item = RandomSpawnItemToMap(item);
-                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), item.PlayerConnection, groupName);
-                            break;
-                        case 13:
-                            //spawn coin and item
-                            item = RandomizeSpecialItem();
-                            item = RandomSpawnItemToMap(item);
-                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), item.PlayerConnection, groupName);
-                            break;
-                        case 15:
-                            //spawn coin and item
-                            item = RandomizeSpecialItem();
-                            item = RandomSpawnItemToMap(item);
-                            connection.SpawnSpecialItem(item.X, item.Y, item.GetSpecialItemId(), item.PlayerConnection, groupName);
-                            break;
-                        default:
-                            break;
-                    }
-
-                    if (!end)
-                    {
-                        //spawn coin
-                        coin = new Coin();
-                        coin = RandomSpawnItemToMap(coin) as Coin;
-                        connection.SpawnCoin(coin.X, coin.Y, groupName);
-                    }*/
                 }
             }
             Draw();
