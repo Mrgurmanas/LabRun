@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using ProjectClient.Class;
 using ProjectClient.Class.AbstractFactory;
+using ProjectClient.Class.Command;
 using ProjectClient.Class.Decorator;
 using ProjectClient.Class.Factory;
 using ProjectClient.Class.Observer;
@@ -67,6 +68,7 @@ namespace ProjectClient
 
         public static int MAP_MAX_SIZE = 20;
         public static int MAP_MIN_SIZE = 0;
+        PlayerController playerController;
         private int[,] MapMatrix = new int[21, 21];
         private GraphicalElement[,] ObjectMatrix = new GraphicalElement[21, 21];
         private int[,] DefaultMap = new int[,] {
@@ -94,7 +96,7 @@ namespace ProjectClient
 
         public GameMap(List<string> groupPlayers, string groupName, string connectionId, Connection connection)
         {
-            
+            playerController = new PlayerController();
             InitializeComponent();
             this.connection = connection;
             this.connectionId = connectionId;
@@ -867,7 +869,8 @@ namespace ProjectClient
                         if (!player.Freezed)
                         {
                             SetMap(player1.X, player1.Y, SPACE_ID);
-                            player1.X = player1.X - 1;
+                            playerController.run(new LeftMoveCommand(player));
+                            //player1.X = player1.X - 1;
                         }
                         else
                         {

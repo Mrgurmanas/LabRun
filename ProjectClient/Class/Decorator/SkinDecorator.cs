@@ -22,7 +22,7 @@ namespace ProjectClient.Class.Decorator
         }
         public  void PutOnSkin(PictureBox picture)
         {
-            Console.WriteLine("bebebeebe");
+           
             _display = picture;
             playerToDecorate.PutOnSkin(picture);
         }

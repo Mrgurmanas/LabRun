@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ProjectClient.Class.Decorator
 {
-    class Hat : SkinDecorator
+    class Normal : SkinDecorator
     {
         private PictureBox _display;
         private Image _image;
@@ -17,7 +17,7 @@ namespace ProjectClient.Class.Decorator
         private const int UP = 0;
         private const int RIGHT = 1;
         private const int DOWN = 2;
-        public Hat(Player player, int direction) : base(player)
+        public Normal(Player player, int direction) : base(player)
         {
             
             playerToDecorate = player;
@@ -46,28 +46,9 @@ namespace ProjectClient.Class.Decorator
                 Image = _image,
                 BackColor = System.Drawing.Color.Red
             };
-            Console.WriteLine("fsdfsdfsdfdsf");
+            
             base.PutOnSkin(_display);
         }
-        //public  void PutOnSkin(int direction)
-        //{
-        //    if(direction == LEFT)
-        //    {
-        //        _display.Image = Properties.Resources.IMG_PLAYER_LEFT;
-        //    }
-        //    if (direction == RIGHT)
-        //    {
-        //        _display.Image = Properties.Resources.IMG_PLAYER_RIGHT;
-        //    }
-        //    if (direction == UP)
-        //    {
-        //        _display.Image = Properties.Resources.IMG_PLAYER_UP;
-        //    }
-        //    if (direction == DOWN)
-        //    {
-        //        _display.Image = Properties.Resources.IMG_PLAYER_DOWN;
-        //    }
-        //    base.PutOnSkin(_display);
-        //}
+        
     }
 }

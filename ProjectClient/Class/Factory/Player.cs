@@ -25,6 +25,18 @@ namespace ProjectClient.Class.Factory
             }
             
         }
+        public void Move(int pos)
+        {
+            if(pos == -1)
+            {
+                X -= 1;
+            }
+            if(pos == 0)
+            {
+                X += 1;
+            }
+            
+        }
 
     }
 }

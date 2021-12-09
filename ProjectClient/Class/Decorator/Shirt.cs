@@ -1,46 +1,54 @@
-﻿//using ProjectClient.Class.Factory;
-//using System;
-//using System.Collections.Generic;
-//using System.Text;
-//using System.Windows.Forms;
-//using System.Drawing;
-//namespace ProjectClient.Class.Decorator
-//{
+﻿using ProjectClient.Class.Factory;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows.Forms;
+using System.Drawing;
+namespace ProjectClient.Class.Decorator
+{
 
-//    class Shirt : SkinDecorator
-//    {
-//        private PictureBox _display;
+    class Shirt : SkinDecorator
+    {
+        private PictureBox _display;
 
-//        public Shirt(Player player, PictureBox display) : base(player)
-//        {
-//            _display = display;
-//            playerToDecorate = player;
+        private Image _image;
+        private const int LEFT = -1;
+        private const int UP = 0;
+        private const int RIGHT = 1;
+        private const int DOWN = 2;
+        public Shirt(Player player, int direction) : base(player)
+        {
 
-//        }
-//        public  override PictureBox Display
-//        {
-//            get
-//            {
-//                if (_display == null)
-//                {
-//                    _display = new PictureBox()
-//                    {
-//                        Location = new Point(playerToDecorate.X, playerToDecorate.Y),
-//                        Size = new Size(playerToDecorate.Length, playerToDecorate.Width),
-//                        BackColor =  System.Drawing.Color.Black
-//                    };
-//                }
+            playerToDecorate = player;
+            playerToDecorate = player;
 
-//                return _display;
-//            }
-//            set
-//            {
-//                base.Display = value;
-//            }
-//        }
-//        public void PutOnSkin()
-//        {
-//            base.PutOnSkin();
-//        }
-//    }
-//}
+            if (direction == LEFT)
+            {
+                _image = Properties.Resources.IMG_PLAYER_RIGHT;
+            }
+            if (direction == RIGHT)
+            {
+                _image = Properties.Resources.IMG_PLAYER_LEFT;
+            }
+            if (direction == UP)
+            {
+                _image = Properties.Resources.IMG_PLAYER_UP;
+            }
+            if (direction == DOWN)
+            {
+                _image = Properties.Resources.IMG_PLAYER_DOWN;
+            }
+
+            _display = new PictureBox()
+            {
+                Location = new Point(playerToDecorate.X, playerToDecorate.Y),
+                Size = new Size(playerToDecorate.Length, playerToDecorate.Width),
+                Image = _image,
+                BackColor = System.Drawing.Color.Red
+            };
+
+            base.PutOnSkin(_display);
+        }
+        
+    }
+}
