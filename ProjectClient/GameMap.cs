@@ -1,16 +1,13 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
-using ProjectClient.Class;
+﻿using ProjectClient.Class;
 using ProjectClient.Class.AbstractFactory;
+using ProjectClient.Class.ChainOfResponsibility;
 using ProjectClient.Class.Factory;
 using ProjectClient.Class.Observer;
 using ProjectClient.Class.State;
 using ProjectClient.Class.Strategy;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace ProjectClient
@@ -21,13 +18,13 @@ namespace ProjectClient
         private string connectionId;
         public string groupName;
 
-        private Graphics g;
+        public Graphics g;
         private const int BLOCK_SIZE = 45;
         private int currentRoundPoint = -1;
         private List<string> groupPlayers;
         GraphicalElement player1;
         GraphicalElement player2;
-        private bool MainPlayer = false;
+        public bool MainPlayer = false;
         GameLevel gameLevel;
         GameRounds gameRounds;
         Subject subject;
@@ -52,12 +49,6 @@ namespace ProjectClient
         private const int PLAYER_ID = 2;
         private const int COIN_ID = 3;
         private const int ITEM_ID = 4;
-        private const int PLAYER1_INV1_ID = 101;
-        private const int PLAYER1_INV2_ID = 102;
-        private const int PLAYER1_INV3_ID = 103;
-        private const int PLAYER2_INV1_ID = 201;
-        private const int PLAYER2_INV2_ID = 202;
-        private const int PLAYER2_INV3_ID = 203;
 
         private const int SPECIAL_WALL_ID = 10;
         private const int SPIKES_ID = 20;
@@ -354,97 +345,6 @@ namespace ProjectClient
                 connection.SpawnSpecialItem(ourItem.X, ourItem.Y, ourItem.GetSpecialItemId(), ourItem.PlayerConnection, groupName);
             }
         }
-
-        /*private Item RandomSpawnItemToMap<T>(T item)
-        {
-            //spawn item
-            Item ourItem = item as Item;
-            int x, y;
-            int[] coords = FindEmptySpace();
-
-            if (coords != null)
-            {
-                x = coords[0];
-                y = coords[1];
-
-                // ObjectMatrix[x, y] = item as Item;
-
-                if (item is DefaultSpecialWall)
-                {
-                    //  MapMatrix[x, y] = SPECIAL_WALL_ID;
-                    ourItem.X = x;
-                    ourItem.Y = y;
-
-                    return ourItem;
-                }
-
-                if (item is UpgradedSpecialWall)
-                {
-                    //  MapMatrix[x, y] = SPECIAL_WALL_ID;
-                    ourItem.X = x;
-                    ourItem.Y = y;
-
-                    return ourItem;
-                }
-
-                if (item is UltimateSpecialWall)
-                {
-                    //  MapMatrix[x, y] = SPECIAL_WALL_ID;
-                    ourItem.X = x;
-                    ourItem.Y = y;
-
-                    return ourItem;
-                }
-
-                if (item is DefaultSpikes)
-                {
-                    //  MapMatrix[x, y] = SPIKES_ID;
-                    ourItem.X = x;
-                    ourItem.Y = y;
-
-                    return ourItem;
-                }
-
-                if (item is UpgradedSpikes)
-                {
-                    //   MapMatrix[x, y] = SPIKES_ID;
-                    ourItem.X = x;
-                    ourItem.Y = y;
-
-                    return ourItem;
-                }
-
-                if (item is UltimateSpikes)
-                {
-                    //   MapMatrix[x, y] = SPIKES_ID;
-                    ourItem.X = x;
-                    ourItem.Y = y;
-
-                    return ourItem;
-                }
-
-                if (item is Coin)
-                {
-                    //   MapMatrix[x, y] = COIN_ID;
-                    ourItem.X = x;
-                    ourItem.Y = y;
-
-                    return ourItem;
-                }
-
-                if (item is Destroyer)
-                {
-                    //   MapMatrix[x, y] = DESTROYER_ID;
-                    ourItem.X = x;
-                    ourItem.Y = y;
-
-                    return ourItem;
-                }
-
-            }
-            //Draw();
-            return null;
-        }*/
 
         //dont need 
         private void GameTimer(object sender, EventArgs e)
@@ -1065,6 +965,20 @@ namespace ProjectClient
             }
         }
 
+        public int GetPlayerItem(int playerId, int inventoryId)
+        {
+            int itemId = -1;
+            if (playerId == PLAYER_1_ID)
+            {
+                itemId = (player1 as Player).inventory.GetItem(inventoryId);
+            }
+            if (playerId == PLAYER_2_ID)
+            {
+                itemId = (player2 as Player).inventory.GetItem(inventoryId);
+            }
+            return itemId;
+        }
+
         private void Draw()
         {
             //UpdateGame();
@@ -1097,10 +1011,17 @@ namespace ProjectClient
                 g.DrawString(player2Score, drawFont, drawBrush, (MAP_MIN_SIZE + 1) * BLOCK_SIZE, ((MAP_MAX_SIZE / 2) - 3) * BLOCK_SIZE, drawFormat);
             }
 
-            Rectangle rectangle = new Rectangle();
-            PointF[] triangle = new PointF[3];
-            int itemId = -1;
+            DrawShapeHandler rectangleHandler = new RectangleShape();
+            DrawShapeHandler ovalHandler = new OvalShape();
+            DrawShapeHandler triangleHandler = new TriangleShape();
+            DrawShapeHandler inventoryHandler = new InventoryShape();
 
+            rectangleHandler.SetNext(ovalHandler);
+            ovalHandler.SetNext(triangleHandler);
+            triangleHandler.SetNext(inventoryHandler);
+
+            int itemId = -1;
+                    
             for (int i = 0; i < 21; i++)
             {
                 for (int j = 0; j < 21; j++)
@@ -1118,218 +1039,13 @@ namespace ProjectClient
                         element = ObjectMatrix[MAP_MAX_SIZE - i, j];
                     }
 
-                    if (blockId != SPIKES_ID)
+                    if(element is Item)
                     {
-                        rectangle = new Rectangle(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                        itemId = (element as Item).GetSpecialItemId();
                     }
-                    else
-                    {
-                        PointF point1 = new PointF(i * BLOCK_SIZE, (j + 1) * BLOCK_SIZE);
-                        PointF point2 = new PointF((i * BLOCK_SIZE) + (BLOCK_SIZE / 2), (j * BLOCK_SIZE));
-                        PointF point3 = new PointF((i * BLOCK_SIZE) + BLOCK_SIZE, (j + 1) * BLOCK_SIZE);
-                        triangle[0] = point1;
-                        triangle[1] = point2;
-                        triangle[2] = point3;
-                    }
-
-                    switch (blockId)
-                    {
-                        case PLAYER1_INV1_ID:
-                            if (MainPlayer)
-                            {
-                                itemId = (player1 as Player).inventory.GetItem(0);
-                            }
-                            else
-                            {
-                                itemId = (player2 as Player).inventory.GetItem(0);
-                            }
-                            if (itemId != -1)
-                            {
-                                DrawItem(itemId, i, j);
-                            }
-                            break;
-                        case PLAYER1_INV2_ID:
-                            if (MainPlayer)
-                            {
-                                itemId = (player1 as Player).inventory.GetItem(1);
-                            }
-                            else
-                            {
-                                itemId = (player2 as Player).inventory.GetItem(1);
-                            }
-                            if (itemId != -1)
-                            {
-                                DrawItem(itemId, i, j);
-                            }
-                            break;
-                        case PLAYER1_INV3_ID:
-                            if (MainPlayer)
-                            {
-                                itemId = (player1 as Player).inventory.GetItem(2);
-                            }
-                            else
-                            {
-                                itemId = (player2 as Player).inventory.GetItem(2);
-                            }
-                            if (itemId != -1)
-                            {
-                                DrawItem(itemId, i, j);
-                            }
-                            break;
-                        case PLAYER2_INV1_ID:
-                            if (MainPlayer)
-                            {
-                                itemId = (player2 as Player).inventory.GetItem(0);
-                            }
-                            else
-                            {
-                                itemId = (player1 as Player).inventory.GetItem(0);
-                            }
-                            if (itemId != -1)
-                            {
-                                DrawItem(itemId, i, j);
-                            }
-                            break;
-                        case PLAYER2_INV2_ID:
-                            if (MainPlayer)
-                            {
-                                itemId = (player2 as Player).inventory.GetItem(1);
-                            }
-                            else
-                            {
-                                itemId = (player1 as Player).inventory.GetItem(1);
-                            }
-                            if (itemId != -1)
-                            {
-                                DrawItem(itemId, i, j);
-                            }
-                            break;
-                        case PLAYER2_INV3_ID:
-                            if (MainPlayer)
-                            {
-                                itemId = (player2 as Player).inventory.GetItem(2);
-                            }
-                            else
-                            {
-                                itemId = (player1 as Player).inventory.GetItem(2);
-                            }
-                            if (itemId != -1)
-                            {
-                                DrawItem(itemId, i, j);
-                            }
-                            break;
-                        case SPACE_ID:
-                            //g.FillRectangle(Brushes.GreenYellow, rectangle);
-                            break;
-                        case PLAYER_ID:
-                            g.FillRectangle(Brushes.GreenYellow, rectangle);
-                            break;
-                        case WALL_ID:
-                            g.FillRectangle(Brushes.Blue, rectangle);
-                            break;
-                        case COIN_ID:
-                            /* if((element as Item).State == Item.STATE_DESTROYED)
-                             {
-                                 connection.SpawnSpecialItem(i, j, Item.STATE_DESTROYED, groupName);
-                             }*/
-                            g.FillEllipse(Brushes.Yellow, rectangle);
-                            break;
-                        case SPECIAL_WALL_ID:
-                            /* if((element as Item).State == Item.STATE_DESTROYED)
-                           {
-                               connection.SpawnSpecialItem(i, j, Item.STATE_DESTROYED, groupName);
-                           }*/
-                            if (element is DefaultSpecialWall)
-                            {
-                                g.FillRectangle(Brushes.DeepSkyBlue, rectangle);
-                            }
-                            else if (element is UpgradedSpecialWall)
-                            {
-                                g.FillRectangle(Brushes.DarkBlue, rectangle);
-                            }
-                            else if (element is UltimateSpecialWall)
-                            {
-                                g.FillRectangle(Brushes.BlueViolet, rectangle);
-                            }
-                            else
-                            {
-                                g.FillRectangle(Brushes.AliceBlue, rectangle);
-                            }
-                            break;
-                        case DESTROYER_ID:
-                            /* if((element as Item).State == Item.STATE_DESTROYED)
-                           {
-                               connection.SpawnSpecialItem(i, j, Item.STATE_DESTROYED, groupName);
-                           }*/
-                            //g.DrawRectangle(new Pen(Brushes.DarkMagenta, 3), rectangle);
-                            g.FillRectangle(Brushes.DarkMagenta, rectangle);
-                            break;
-                        case SPIKES_ID:
-                            /* if((element as Item).State == Item.STATE_DESTROYED)
-                           {
-                               connection.SpawnSpecialItem(i, j, Item.STATE_DESTROYED, groupName);
-                           }*/
-                            if (element is DefaultSpikes)
-                            {
-                                g.FillPolygon(Brushes.DeepSkyBlue, triangle);
-                            }
-                            else if (element is UpgradedSpikes)
-                            {
-                                g.FillPolygon(Brushes.DarkBlue, triangle);
-                            }
-                            else if (element is UltimateSpikes)
-                            {
-                                g.FillPolygon(Brushes.BlueViolet, triangle);
-                            }
-                            else
-                            {
-                                g.FillPolygon(Brushes.White, triangle);
-                            }
-                            break;
-                    }
+                    
+                    rectangleHandler.DrawShape(blockId, itemId, i, j);
                 }
-            }
-        }
-
-        private void DrawItem(int itemId, int i, int j)
-        {
-            Rectangle rectangle = new Rectangle();
-            PointF[] triangle = new PointF[3];
-
-            rectangle = new Rectangle(i * BLOCK_SIZE, j * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-
-            PointF point1 = new PointF(i * BLOCK_SIZE, (j + 1) * BLOCK_SIZE);
-            PointF point2 = new PointF((i * BLOCK_SIZE) + (BLOCK_SIZE / 2), (j * BLOCK_SIZE));
-            PointF point3 = new PointF((i * BLOCK_SIZE) + BLOCK_SIZE, (j + 1) * BLOCK_SIZE);
-            triangle[0] = point1;
-            triangle[1] = point2;
-            triangle[2] = point3;
-
-            switch (itemId)
-            {
-                case Item.DEFAULT_SPECIAL_WALL_ID:
-                    g.FillRectangle(Brushes.DeepSkyBlue, rectangle);
-                    break;
-                case Item.UPGRADED_SPECIAL_WALL_ID:
-                    g.FillRectangle(Brushes.DarkBlue, rectangle);
-                    break;
-                case Item.ULTIMATE_SPECIAL_WALL_ID:
-                    g.FillRectangle(Brushes.DarkMagenta, rectangle);
-                    break;
-                case Item.DEFAULT_SPIKES_ID:
-                    g.FillPolygon(Brushes.DeepSkyBlue, triangle);
-                    break;
-                case Item.UPGRADED_SPIKES_ID:
-                    g.FillPolygon(Brushes.DarkBlue, triangle);
-                    break;
-                case Item.ULTIMATE_SPIKES_ID:
-                    g.FillPolygon(Brushes.DarkMagenta, triangle);
-                    break;
-                case Item.COIN_ID:
-                    break;
-                case Item.DESTROYER_ID:
-                    g.FillRectangle(Brushes.DarkMagenta, rectangle);
-                    break;
             }
         }
 
