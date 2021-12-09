@@ -931,9 +931,19 @@ namespace ProjectClient
 
         private Color mainTextColor;
 
+        public void SetTextColorByServer(string color)
+        {
+            mainTextColor = Color.FromName(color);
+            if(mainTextColor == null)
+            {
+                mainTextColor = Color.White;
+            }
+        }
+
         public void SetTextColor(Color color)
         {
-            mainTextColor = color;
+            string colorName = color.Name;
+            connection.SetTextColor(colorName, groupName);
         }
 
         private void UpdatePlayersPosMap()

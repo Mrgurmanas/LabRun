@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -102,6 +103,11 @@ namespace ProjectClient.Class
             connection.InvokeCoreAsync("RemovePlayerItem", args: new[] {connectionId, groupName });
         }
 
+        public void SetTextColor(string color, string groupName)
+        {
+            connection.InvokeCoreAsync("SetTextColor", args: new[] {color, groupName});
+        }
+
         private void ServerResponseHandling()
         {
             connection.On("UpdatePlayers", (int X, int Y, string connectionId, string groupName) =>
@@ -115,6 +121,11 @@ namespace ProjectClient.Class
             connection.On("SpawnCoin", (int X, int Y) =>
             {
                 gameMap.SpawnCoinByServer(X, Y);
+            });
+
+            connection.On("SetTextColor", (string color) =>
+            {
+                gameMap.SetTextColorByServer(color);
             });
 
             connection.On("AddPlayerPoints", (int points, string connectionId) =>

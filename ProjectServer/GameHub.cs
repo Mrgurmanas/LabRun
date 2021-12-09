@@ -147,6 +147,11 @@ namespace ProjectServer
             return Clients.Group(groupName).SendAsync("RemovePlayerItem", connectionId);
         }
 
+        public Task SetTextColor(string color, string groupName)
+        {
+            return Clients.Group(groupName).SendAsync("SetTextColor", color);
+        }
+
         public Task UpdatePlayerPos(string X, string Y, string connectionId, string groupName)
         {
             Console.WriteLine("UpdatePlayerPos X: " + X + " Y: " + Y + " connectionId: " + connectionId + " groupName: " + groupName);
