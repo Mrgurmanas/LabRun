@@ -11,13 +11,13 @@ namespace ProjectClient.Class.Command
         {
             
         }
-        public override void execute()
+        public override void Execute()
         {
-            target.Move(2);
+            
         }
-        public override void undo()
+        public override void Undo()
         {
-
+            target.Move("down");
         }
     }
 }

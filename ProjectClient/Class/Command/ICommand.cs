@@ -8,10 +8,10 @@ namespace ProjectClient.Class.Command
      abstract class ICommand
     {
 
-        public abstract void execute();
+        public abstract void Execute();
 
         protected Player target;
-        public abstract void undo();
+        public abstract void Undo();
         
         public ICommand(Player player):base()
         {

@@ -4,7 +4,9 @@ using System.Text;
 
 namespace ProjectClient.Class.Interpretor
 {
-    class RightExpression
+    
+    class Object
     {
+        string left, right;
     }
 }

@@ -10,20 +10,20 @@ namespace ProjectClient.Class.Command
     {
 
         private List<ICommand> list = new List<ICommand>();
-        public List<ICommand> getList()
+        public List<ICommand> GetList()
         {
             return list;
         }
-        public void setList(List<ICommand> list)
+        public void SetList(List<ICommand> list)
         {
             this.list = list;
         }
-        public void run(ICommand cmd)
+        public void Run(ICommand cmd)
         {
             list.Add(cmd);
-            cmd.execute();
+            cmd.Execute();
         }
-        public void undo()
+        public void Undo()
         {
             int index = list.Count;
             ICommand cmd = list[index - 1];
@@ -31,7 +31,7 @@ namespace ProjectClient.Class.Command
 
 
             
-            cmd.undo();
+            cmd.Undo();
         }
         
     }

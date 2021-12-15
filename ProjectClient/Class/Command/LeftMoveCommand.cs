@@ -7,17 +7,18 @@ namespace ProjectClient.Class.Command
 {
     class LeftMoveCommand : ICommand
     {
-        public override void execute()
+        public override void Execute()
         {
-
+            target.Move("left");
         }
         public LeftMoveCommand(Player player) : base(player)
         {
 
         }
-        public override void undo()
+        public override void Undo()
         {
-            target.Move(-1);
+            //target.Move();
+            
         }
     }
 }

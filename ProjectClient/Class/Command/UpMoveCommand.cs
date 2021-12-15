@@ -7,17 +7,17 @@ namespace ProjectClient.Class.Command
 {
     class UpMoveCommand : ICommand
     {
-        public override void execute()
+        public override void Execute()
         {
-            target.Move(0);
+            
         }
         public UpMoveCommand(Player player) : base(player)
         {
 
         }
-        public override void undo()
+        public override void Undo()
         {
-
+            target.Move("up");
         }
     }
 }

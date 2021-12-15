@@ -17,26 +17,32 @@ namespace ProjectClient.Class.Decorator
             {
                 throw new ArgumentNullException("ghostToDecorate");
             }
-
+            Console.WriteLine("padekoravom");
+            
             playerToDecorate = player;
+            //playerToDecorate.Move("starting");
         }
-        public  void PutOnSkin(PictureBox picture)
+        public  void Move(string direction)
         {
-           
-            _display = picture;
-            playerToDecorate.PutOnSkin(picture);
+
+            playerToDecorate.Move(direction);
+            
         }
-        public virtual PictureBox Display
+        public PictureBox GetDisplay()
         {
-            get
-            {
-                return _display;
-            }
-            set
-            {
-                _display = value;
-            }
+            return playerToDecorate.Display;
         }
+        //public virtual PictureBox Display
+        //{
+        //    get
+        //    {
+        //        return _display;
+        //    }
+        //    set
+        //    {
+        //        _display = value;
+        //    }
+        //}
 
 
 

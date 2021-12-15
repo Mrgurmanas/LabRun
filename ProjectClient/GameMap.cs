@@ -29,7 +29,7 @@ namespace ProjectClient
         GraphicalElement player1;
         GraphicalElement player2;
 
-        Normal playerSkin;
+        SkinDecorator playerSkin;
         Player opponentsSkin = new Player();
         private bool MainPlayer = false;
         GameRound gameRound;
@@ -97,6 +97,7 @@ namespace ProjectClient
         public GameMap(List<string> groupPlayers, string groupName, string connectionId, Connection connection)
         {
             playerController = new PlayerController();
+            
             InitializeComponent();
             this.connection = connection;
             this.connectionId = connectionId;
@@ -108,7 +109,8 @@ namespace ProjectClient
             MapMatrix = Transpose(DefaultMap);
             CreateObjectMatrix();
 
-            playerSkin = new Normal(player1 as Player, RIGHT);
+            Player player = player1 as Player;
+            playerSkin = new Normal(player);
 
             if (groupPlayers.Count == GROUP_SIZE)
             {
@@ -140,6 +142,9 @@ namespace ProjectClient
             subject = new Server();
 
             UpdateGame();
+            ConsoleWindow console = new ConsoleWindow();
+            console.Show();
+            
         }
 
 
@@ -196,7 +201,7 @@ namespace ProjectClient
                     ObjectMatrix[1, 10] = player2;
                     break;
             }
-
+            
             for (int i = 0; i < 21; i++)
             {
                 for (int j = 0; j < 21; j++)
@@ -852,7 +857,7 @@ namespace ProjectClient
                 }
             }
         }
-
+       
         private void UpdatePlayerPosition(int pos)
         {
             Player player = player1 as Player;
@@ -861,16 +866,19 @@ namespace ProjectClient
                 case LEFT:
                     if (player1.X - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X - 1, player1.Y] != WALL_ID && MapMatrix[player1.X - 1, player1.Y] != PLAYER_ID))
                     {
-                        playerSkin = new Normal(player, LEFT);
-
+                        
+                        Console.WriteLine("Player:  ");
+                        Console.WriteLine(playerSkin);
                         //playerSkin = player;
                         
                         CheckForItem(player, player1.X - 1, player1.Y);
                         if (!player.Freezed)
                         {
-                            SetMap(player1.X, player1.Y, SPACE_ID);
-                            playerController.run(new LeftMoveCommand(player));
-                            //player1.X = player1.X - 1;
+                        //    SetMap(player1.X, player1.Y, SPACE_ID);
+                        //    ICommand left = new LeftMoveCommand(playerSkin);
+                        //    playerController.Run(left);
+                            
+                            player1.X = player1.X - 1;
                         }
                         else
                         {
@@ -881,12 +889,13 @@ namespace ProjectClient
                 case UP:
                     if (player1.Y - 1 > MAP_MIN_SIZE && (MapMatrix[player1.X, player1.Y - 1] != WALL_ID && MapMatrix[player1.X, player1.Y - 1] != PLAYER_ID))
                     {
-                        playerSkin = new Normal(player, UP);
+                        //playerSkin = new Normal(player);
                         CheckForItem(player1 as Player, player1.X, player1.Y - 1);
                         if (!player.Freezed)
                         {
                             SetMap(player1.X, player1.Y, SPACE_ID);
-                            player1.Y = player1.Y - 1;
+                            playerSkin.Move("up");
+                            //player1.Y = player1.Y - 1;
                         }
                         else
                         {
@@ -897,12 +906,13 @@ namespace ProjectClient
                 case RIGHT:
                     if (player1.X + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X + 1, player1.Y] != WALL_ID && MapMatrix[player1.X + 1, player1.Y] != PLAYER_ID))
                     {
-                        playerSkin = new Normal(player, RIGHT);
+                        playerSkin = new Normal(player);
                         CheckForItem(player1 as Player, player1.X + 1, player1.Y);
                         if (!player.Freezed)
                         {
                             SetMap(player1.X, player1.Y, SPACE_ID);
-                            player1.X = player1.X + 1;
+                            playerSkin.Move("right");
+                            //player1.X = player1.X + 1;
                         }
                         else
                         {
@@ -913,7 +923,7 @@ namespace ProjectClient
                 case DOWN:
                     if (player1.Y + 1 < MAP_MAX_SIZE && (MapMatrix[player1.X, player1.Y + 1] != WALL_ID && MapMatrix[player1.X, player1.Y + 1] != PLAYER_ID))
                     {
-                        playerSkin = new Normal(player, DOWN);
+                       
                         CheckForItem(player1 as Player, player1.X, player1.Y + 1);
                         if (!player.Freezed)
                         {
@@ -1035,7 +1045,7 @@ namespace ProjectClient
         {
             //UpdateGame();
             canvas.Refresh();
-
+            
             // Create string to draw.
             String coinsLeft = (GameRound.MAX_COIN_COUNT - gameRound.GetCurrentCoin()) + " coins";
             String player1Score = gameRound.GetPlayerPoints(PLAYER_1_ID) + " points";
@@ -1188,8 +1198,15 @@ namespace ProjectClient
                             break;
                         case PLAYER_ID:
                             g.FillRectangle(Brushes.GreenYellow, rectangle);
-                            g.DrawImage(playerSkin.Display.Image, rectangle);
-                            
+                            //Player player = player1 as Player;
+                            //playerSkin = new Normal(player);
+                            //playerSkin.Move("right");
+                            if (playerSkin != null && playerSkin.GetDisplay() != null)
+                            {
+                                g.DrawImage(playerSkin.GetDisplay().Image, rectangle);
+                            }
+
+
                             break;
                         case WALL_ID:
                             g.FillRectangle(Brushes.Blue, rectangle);

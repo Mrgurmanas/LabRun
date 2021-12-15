@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
@@ -12,12 +13,17 @@ namespace ProjectClient.Class.Factory
         public bool Freezed = false;
         public string ConnectionId { get; set; } = "";
         private PictureBox _picture;
-
+        private PictureBox _display;
+        private Image _image;
+        private const int LEFT = -1;
+        private const int UP = 0;
+        private const int RIGHT = 1;
+        private const int DOWN = 2;
         public void PutOnSkin(PictureBox picture)
         {
             _picture = picture;
         }
-        public virtual PictureBox Display
+        public virtual PictureBox Picture
         {
             get
             {
@@ -25,17 +31,68 @@ namespace ProjectClient.Class.Factory
             }
             
         }
-        public void Move(int pos)
+        public virtual PictureBox Display
         {
-            if(pos == -1)
+            get
             {
-                X -= 1;
+                return _display;
             }
-            if(pos == 0)
+
+        }
+        //public void Move(string direction)
+        //{
+        //    if(direction == "left")
+        //    {
+        //        X = X - 1;
+        //    }
+
+        //    if(direction == "right")
+        //    {
+        //        X += 1;
+        //    }
+        //    if(direction == "up")
+        //    {
+        //        Y = Y - 1;
+        //    }
+        //    if (direction == "down")
+        //    {
+        //        Y = Y + 1;
+        //    }
+
+        //}
+        public void Move(string direction)
+        {
+            if (direction == "left")
             {
+                _image = Properties.Resources.IMG_PLAYER_LEFT;
+                X = X - 1;
+            }
+            if (direction == "right")
+            {
+                _image = Properties.Resources.IMG_PLAYER_RIGHT;
                 X += 1;
             }
-            
+            if (direction == "up")
+            {
+                _image = Properties.Resources.IMG_PLAYER_UP;
+                Y = Y - 1;
+            }
+            if (direction == "down")
+            {
+                _image = Properties.Resources.IMG_PLAYER_DOWN;
+                Y = Y + 1;
+            }
+            if(direction == "starting")
+            {
+                _image = Properties.Resources.IMG_PLAYER_RIGHT;
+            }
+            _display = new PictureBox()
+            {
+                Location = new Point(X, Y),
+                Size = new Size(Length, Width),
+                Image = _image,
+                BackColor = System.Drawing.Color.Red
+            };
         }
 
     }
